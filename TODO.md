@@ -87,44 +87,44 @@
 ## 🎯 M2: 今日打卡页（核心功能）
 
 ### 2.1 数据逻辑层
-- [ ] 创建 `composables/useToday.ts`
-  - [ ] 实现每日任务生成逻辑（从模板生成）
-  - [ ] 实现任务完成状态切换
-  - [ ] 实现进度计算
-  - [ ] 实现打卡完成判断
-  - [ ] 实现临时任务添加
-  - [ ] 实现笔记保存
-  - [ ] 实现 streak 连续天数计算
+- [x] 创建 `composables/useToday.ts`
+  - [x] 实现每日任务生成逻辑（从模板生成）
+  - [x] 实现任务完成状态切换
+  - [x] 实现进度计算
+  - [x] 实现打卡完成判断
+  - [x] 实现临时任务添加
+  - [x] 实现笔记保存
+  - [x] 实现 streak 连续天数计算
 
 ### 2.2 UI 组件
-- [ ] 创建 `components/TaskCard.vue`
-  - [ ] 接收 props：task 对象、completed 状态
-  - [ ] 显示任务名称、描述、类型徽章
-  - [ ] 完成态样式（划线、灰色）
-  - [ ] 点击切换动画
-- [ ] 创建 `components/ProgressBar.vue`
-  - [ ] 接收 props：done / total
-  - [ ] 动态宽度动画
-- [ ] 创建打卡成功横幅组件 `components/CompleteBanner.vue`
-  - [ ] 庆祝动画（从上滑入）
-  - [ ] 显示连续天数
+- [x] 创建 `components/TaskCard.vue`
+  - [x] 接收 props：task 对象、completed 状态
+  - [x] 显示任务名称、描述、类型徽章
+  - [x] 完成态样式（划线、灰色）
+  - [x] 点击切换动画
+- [x] 创建 `components/ProgressBar.vue`
+  - [x] 接收 props：done / total
+  - [x] 动态宽度动画
+- [x] 创建打卡成功横幅组件 `components/CompleteBanner.vue`
+  - [x] 庆祝动画（从上滑入）
+  - [x] 显示连续天数
 
 ### 2.3 Today 页面实现
-- [ ] 实现 `pages/Today.vue`
-  - [ ] 顶部头部：日期、问候语、streak 徽章
-  - [ ] 进度条区域
-  - [ ] 当前计划标签卡片
-  - [ ] 任务列表渲染（使用 TaskCard 组件）
-  - [ ] 临时追加任务按钮 + 逻辑
-  - [ ] 学习笔记输入框
-  - [ ] 打卡成功横幅（条件显示）
-- [ ] 集成 `useToday` composable
-- [ ] 数据持久化：任务完成状态实时保存至 DailyLog
+- [x] 实现 `pages/Today.vue`
+  - [x] 顶部头部：日期、问候语、streak 徽章
+  - [x] 进度条区域
+  - [x] 当前计划标签卡片
+  - [x] 任务列表渲染（使用 TaskCard 组件）
+  - [x] 临时追加任务按钮 + 逻辑
+  - [x] 学习笔记输入框
+  - [x] 打卡成功横幅（条件显示）
+- [x] 集成 `useToday` composable
+- [x] 数据持久化：任务完成状态实时保存至 DailyLog
 
 ### 2.4 多语言完善
-- [ ] 完成 Today 页面所有文案的三语翻译
-- [ ] 日期格式本地化（中/英/日）
-- [ ] 任务类型徽章文案翻译
+- [x] 完成 Today 页面所有文案的三语翻译
+- [x] 日期格式本地化（中/英/日）
+- [x] 任务类型徽章文案翻译
 
 ### 2.5 测试验证
 - [ ] 测试首次进入：自动生成当日任务
