@@ -5,5 +5,154 @@
     "stats": "统计",
     "plans": "计划",
     "settings": "设置"
+  },
+  "today": {
+    "greeting": {
+      "morning": "早上好",
+      "afternoon": "下午好",
+      "evening": "晚上好"
+    },
+    "streak": "{days} 天连续",
+    "progress": "今日进度",
+    "progressDetail": "{done} / {total} 已完成",
+    "noPlan": "还没有学习计划",
+    "noPlanSub": "去「计划」页面创建一个吧",
+    "addTask": "+ 追加任务",
+    "addTaskPlaceholder": "输入临时任务描述…",
+    "addTaskConfirm": "添加",
+    "addTaskCancel": "取消",
+    "note": "今日笔记",
+    "notePlaceholder": "写下今天学到的内容…",
+    "allDone": "打卡完成！",
+    "allDoneSub": "太棒了！连续第 {days} 天",
+    "planLabel": "进行中的计划",
+    "planEnds": "结束于 {date}"
+  },
+  "calendar": {
+    "title": "打卡日历",
+    "weekdays": ["日", "一", "二", "三", "四", "五", "六"],
+    "statsStreak": "连续天数",
+    "statsMonthDone": "本月完成",
+    "statsMonthRate": "本月达成率",
+    "recentTitle": "最近记录",
+    "noRecent": "暂无打卡记录",
+    "dayDetail": {
+      "title": "{date} 详情",
+      "tasks": "任务完成情况",
+      "note": "今日笔记",
+      "noNote": "没有笔记",
+      "noTasks": "当天没有任务",
+      "close": "关闭"
+    },
+    "status": {
+      "done": "全完成",
+      "partial": "部分完成",
+      "none": "未打卡"
+    }
+  },
+  "stats": {
+    "title": "学习统计",
+    "totalTasks": "累计任务",
+    "totalDays": "学习天数",
+    "weekChart": "本周完成",
+    "typeBreakdown": "任务类型分布",
+    "range": {
+      "week": "本周",
+      "month": "本月",
+      "all": "全部"
+    },
+    "noData": "暂无数据",
+    "tasksUnit": "个",
+    "daysUnit": "天"
+  },
+  "plans": {
+    "title": "学习计划",
+    "active": "进行中",
+    "archived": "已归档",
+    "newPlan": "+ 新建计划",
+    "noPlans": "还没有计划",
+    "noPlansSub": "创建你的第一个学习计划",
+    "daysLeft": "还剩 {days} 天",
+    "daysOver": "已结束",
+    "form": {
+      "titleCreate": "新建计划",
+      "titleEdit": "编辑计划",
+      "name": "计划名称",
+      "namePlaceholder": "例如：JLPT N2 备考",
+      "bookTitle": "关联书籍",
+      "bookTitlePlaceholder": "例如：新完全マスター文法",
+      "startDate": "开始日期",
+      "endDate": "结束日期",
+      "color": "主题色",
+      "templates": "每日任务模板",
+      "addTemplate": "+ 添加模板",
+      "save": "保存",
+      "cancel": "取消",
+      "archive": "归档",
+      "archiveConfirm": "确认归档此计划？归档后不再生成任务，历史记录保留。",
+      "deleteConfirm": "确认删除此计划？此操作不可撤销。",
+      "errors": {
+        "nameRequired": "计划名称不能为空",
+        "dateRequired": "请选择开始和结束日期",
+        "dateOrder": "结束日期必须晚于开始日期"
+      }
+    },
+    "template": {
+      "weekdays": "适用星期",
+      "everyday": "每天",
+      "items": "任务项",
+      "addItem": "+ 添加任务项",
+      "count": "数量",
+      "description": "备注"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "section": {
+      "general": "通用",
+      "data": "数据管理",
+      "about": "关于"
+    },
+    "language": "语言",
+    "darkMode": "深色模式",
+    "reminder": "学习提醒",
+    "reminderTime": "提醒时间",
+    "export": "导出数据",
+    "exportSub": "导出 JSON 备份至本地",
+    "import": "导入数据",
+    "importSub": "从 JSON 文件恢复数据",
+    "deleteData": "清除所有数据",
+    "deleteDataSub": "清除后无法恢复",
+    "deleteConfirm": "确认清除所有数据？此操作不可撤销。",
+    "storageSize": "本地数据占用",
+    "version": "版本",
+    "slogan": "坚持，是最好的学习方法"
+  },
+  "taskType": {
+    "questions": "题目",
+    "grammar": "语法",
+    "pages": "阅读",
+    "listening": "听力",
+    "vocab": "词汇",
+    "custom": "自定义"
+  },
+  "common": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "loading": "加载中…",
+    "error": "出错了，请重试"
+  },
+  "weekday": {
+    "0": "周日",
+    "1": "周一",
+    "2": "周二",
+    "3": "周三",
+    "4": "周四",
+    "5": "周五",
+    "6": "周六"
   }
 }

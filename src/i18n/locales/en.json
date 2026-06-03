@@ -5,5 +5,154 @@
     "stats": "Stats",
     "plans": "Plans",
     "settings": "Settings"
+  },
+  "today": {
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "streak": "{days} day streak",
+    "progress": "Today's Progress",
+    "progressDetail": "{done} / {total} completed",
+    "noPlan": "No study plan yet",
+    "noPlanSub": "Create one in the Plans tab",
+    "addTask": "+ Add task",
+    "addTaskPlaceholder": "Enter task description…",
+    "addTaskConfirm": "Add",
+    "addTaskCancel": "Cancel",
+    "note": "Today's Notes",
+    "notePlaceholder": "What did you learn today?",
+    "allDone": "All done!",
+    "allDoneSub": "Great work! Day {days} in a row",
+    "planLabel": "Active plans",
+    "planEnds": "Ends {date}"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "statsStreak": "Streak",
+    "statsMonthDone": "This month",
+    "statsMonthRate": "Completion",
+    "recentTitle": "Recent",
+    "noRecent": "No check-ins yet",
+    "dayDetail": {
+      "title": "{date}",
+      "tasks": "Tasks",
+      "note": "Notes",
+      "noNote": "No notes",
+      "noTasks": "No tasks that day",
+      "close": "Close"
+    },
+    "status": {
+      "done": "Complete",
+      "partial": "Partial",
+      "none": "No check-in"
+    }
+  },
+  "stats": {
+    "title": "Statistics",
+    "totalTasks": "Total tasks",
+    "totalDays": "Study days",
+    "weekChart": "This week",
+    "typeBreakdown": "Task breakdown",
+    "range": {
+      "week": "Week",
+      "month": "Month",
+      "all": "All time"
+    },
+    "noData": "No data yet",
+    "tasksUnit": "",
+    "daysUnit": ""
+  },
+  "plans": {
+    "title": "Plans",
+    "active": "Active",
+    "archived": "Archived",
+    "newPlan": "+ New plan",
+    "noPlans": "No plans yet",
+    "noPlansSub": "Create your first study plan",
+    "daysLeft": "{days} days left",
+    "daysOver": "Ended",
+    "form": {
+      "titleCreate": "New Plan",
+      "titleEdit": "Edit Plan",
+      "name": "Plan name",
+      "namePlaceholder": "e.g. JLPT N2 Prep",
+      "bookTitle": "Book / material",
+      "bookTitlePlaceholder": "e.g. Shin Kanzen Master Grammar",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "color": "Color",
+      "templates": "Daily task templates",
+      "addTemplate": "+ Add template",
+      "save": "Save",
+      "cancel": "Cancel",
+      "archive": "Archive",
+      "archiveConfirm": "Archive this plan? It will stop generating tasks but history is kept.",
+      "deleteConfirm": "Delete this plan? This cannot be undone.",
+      "errors": {
+        "nameRequired": "Plan name is required",
+        "dateRequired": "Please select start and end dates",
+        "dateOrder": "End date must be after start date"
+      }
+    },
+    "template": {
+      "weekdays": "Days",
+      "everyday": "Every day",
+      "items": "Tasks",
+      "addItem": "+ Add task",
+      "count": "Count",
+      "description": "Notes"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "section": {
+      "general": "General",
+      "data": "Data",
+      "about": "About"
+    },
+    "language": "Language",
+    "darkMode": "Dark mode",
+    "reminder": "Daily reminder",
+    "reminderTime": "Reminder time",
+    "export": "Export data",
+    "exportSub": "Save a JSON backup",
+    "import": "Import data",
+    "importSub": "Restore from a JSON file",
+    "deleteData": "Clear all data",
+    "deleteDataSub": "This cannot be undone",
+    "deleteConfirm": "Clear all data? This cannot be undone.",
+    "storageSize": "Storage used",
+    "version": "Version",
+    "slogan": "Consistency is the best study method"
+  },
+  "taskType": {
+    "questions": "Questions",
+    "grammar": "Grammar",
+    "pages": "Pages",
+    "listening": "Listening",
+    "vocab": "Vocabulary",
+    "custom": "Custom"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading…",
+    "error": "Something went wrong"
+  },
+  "weekday": {
+    "0": "Sun",
+    "1": "Mon",
+    "2": "Tue",
+    "3": "Wed",
+    "4": "Thu",
+    "5": "Fri",
+    "6": "Sat"
   }
 }

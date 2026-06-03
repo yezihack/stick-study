@@ -42,38 +42,38 @@
 - [x] 编写 config 表默认数据插入
 
 ### 1.4 多语言 i18n
-- [ ] 创建 `i18n/index.ts` - vue-i18n 初始化
-- [ ] 创建语言文件
-  - [ ] `i18n/locales/zh-CN.json`
-  - [ ] `i18n/locales/en.json`
-  - [ ] `i18n/locales/ja.json`
-- [ ] 实现语言自动检测逻辑（读取系统语言）
-- [ ] 实现语言持久化（从 Dexie config 表读取）
-- [ ] 在 `main.ts` 中注册 i18n 插件
+- [x] 创建 `i18n/index.ts` - vue-i18n 初始化
+- [x] 创建语言文件
+  - [x] `i18n/locales/zh-CN.json`
+  - [x] `i18n/locales/en.json`
+  - [x] `i18n/locales/ja.json`
+- [x] 实现语言自动检测逻辑（读取系统语言）
+- [x] 实现语言持久化（从 Dexie config 表读取）
+- [x] 在 `main.ts` 中注册 i18n 插件
 
 ### 1.5 路由配置
-- [ ] 创建 `router/index.ts`
-- [ ] 配置 5 个路由：Today / Calendar / Stats / Plans / Settings
-- [ ] 设置默认路由为 `/today`
-- [ ] 在 `App.vue` 中添加 `<router-view>`
+- [x] 创建 `router/index.ts`
+- [x] 配置 5 个路由：Today / Calendar / Stats / Plans / Settings
+- [x] 设置默认路由为 `/today`
+- [x] 在 `App.vue` 中添加 `<router-view>`
 
 ### 1.6 UI 基础框架
-- [ ] 创建全局 CSS 变量文件 `assets/theme.css`
-  - [ ] 定义色彩 token
-  - [ ] 定义字体配置
-  - [ ] 定义尺寸变量
-- [ ] 引入 Google Fonts（Noto Sans、Noto Serif、DM Mono）
-- [ ] 创建底部导航组件 `components/BottomNav.vue`
-  - [ ] 5 个导航按钮
-  - [ ] 激活态高亮
-  - [ ] 路由跳转
-- [ ] 在 `App.vue` 中集成底部导航
+- [x] 创建全局 CSS 变量文件 `assets/theme.css`
+  - [x] 定义色彩 token
+  - [x] 定义字体配置
+  - [x] 定义尺寸变量
+- [x] 引入 Google Fonts（Noto Sans、Noto Serif、DM Mono）
+- [x] 创建底部导航组件 `components/BottomNav.vue`
+  - [x] 5 个导航按钮
+  - [x] 激活态高亮
+  - [x] 路由跳转
+- [x] 在 `App.vue` 中集成底部导航
 
 ### 1.7 测试验证
-- [ ] 运行 `npm run dev`，确保项目启动成功
-- [ ] 测试路由切换，5 个页面可正常导航
-- [ ] 测试 i18n，在设置页临时添加语言切换，验证翻译生效
-- [ ] 测试 Dexie，在控制台手动插入/查询数据验证
+- [x] 运行 `npm run dev`，确保项目启动成功
+- [x] 测试路由切换，5 个页面可正常导航
+- [x] 测试 i18n，在设置页临时添加语言切换，验证翻译生效
+- [x] 测试 Dexie，在控制台手动插入/查询数据验证
 
 **M1 完成标准：**
 - ✅ 项目可运行，无编译错误
