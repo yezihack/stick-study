@@ -8,38 +8,38 @@
 ## 🎯 M1: 基础框架 + 数据层 + 多语言骨架
 
 ### 1.1 项目初始化
-- [ ] 使用 Vite 创建 Vue 3 项目
-- [ ] 配置 TypeScript
-- [ ] 安装依赖：vue-router、vue-i18n、dexie
-- [ ] 配置 ESLint + Prettier
-- [ ] 初始化 Git 仓库，编写 `.gitignore`
+- [x] 使用 Vite 创建 Vue 3 项目
+- [x] 配置 TypeScript
+- [x] 安装依赖：vue-router、vue-i18n、dexie
+- [x] 配置 ESLint + Prettier
+- [x] 初始化 Git 仓库，编写 `.gitignore`
 
 ### 1.2 目录结构搭建
-- [ ] 创建 `src/` 下的完整目录结构
-  - [ ] `assets/` - 静态资源
-  - [ ] `components/` - 通用组件
-  - [ ] `composables/` - 业务 hooks
-  - [ ] `db/` - 数据库
-  - [ ] `i18n/` - 多语言
-  - [ ] `pages/` - 页面组件
-  - [ ] `router/` - 路由配置
-- [ ] 创建空白页面框架（5个页面）
+- [x] 创建 `src/` 下的完整目录结构
+  - [x] `assets/` - 静态资源
+  - [x] `components/` - 通用组件
+  - [x] `composables/` - 业务 hooks
+  - [x] `db/` - 数据库
+  - [x] `i18n/` - 多语言
+  - [x] `pages/` - 页面组件
+  - [x] `router/` - 路由配置
+- [x] 创建空白页面框架（5个页面）
 
 ### 1.3 Dexie 数据层
-- [ ] 创建 `db/models.ts` - 定义所有 TypeScript 接口
-  - [ ] `Plan` 接口
-  - [ ] `TaskTemplate` 接口
-  - [ ] `TaskItem` 接口
-  - [ ] `DailyLog` 接口
-  - [ ] `TaskLog` 接口
-  - [ ] `AppConfig` 接口
-  - [ ] `TaskType` 枚举
-- [ ] 创建 `db/index.ts` - Dexie 数据库实例
-  - [ ] 定义 4 张表：plans / taskTemplates / dailyLogs / config
-  - [ ] 配置索引
-  - [ ] 导出数据库实例
-- [ ] 编写数据库初始化逻辑（首次启动）
-- [ ] 编写 config 表默认数据插入
+- [x] 创建 `db/models.ts` - 定义所有 TypeScript 接口
+  - [x] `Plan` 接口
+  - [x] `TaskTemplate` 接口
+  - [x] `TaskItem` 接口
+  - [x] `DailyLog` 接口
+  - [x] `TaskLog` 接口
+  - [x] `AppConfig` 接口
+  - [x] `TaskType` 枚举
+- [x] 创建 `db/index.ts` - Dexie 数据库实例
+  - [x] 定义 4 张表：plans / taskTemplates / dailyLogs / config
+  - [x] 配置索引
+  - [x] 导出数据库实例
+- [x] 编写数据库初始化逻辑（首次启动）
+- [x] 编写 config 表默认数据插入
 
 ### 1.4 多语言 i18n
 - [ ] 创建 `i18n/index.ts` - vue-i18n 初始化

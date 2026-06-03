@@ -4,7 +4,7 @@ import en from './locales/en.json'
 import ja from './locales/ja.json'
 
 // Detect system language
-const getDefaultLocale = (): string => {
+export const getDefaultLocale = (): string => {
   const browserLang = navigator.language.toLowerCase()
   
   if (browserLang.startsWith('zh')) return 'zh-CN'
@@ -24,5 +24,20 @@ const i18n = createI18n({
     ja
   }
 })
+
+// Helper to load locale from database and apply it
+export async function loadLocaleFromDB() {
+  try {
+    const { getConfig } = await import('@/db')
+    const config = await getConfig()
+    
+    if (config && config.language) {
+      i18n.global.locale.value = config.language
+      console.log('✅ Loaded language from DB:', config.language)
+    }
+  } catch (error) {
+    console.error('❌ Failed to load locale from DB:', error)
+  }
+}
 
 export default i18n
