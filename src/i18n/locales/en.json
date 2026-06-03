@@ -1,0 +1,9 @@
+{
+  "nav": {
+    "today": "Today",
+    "calendar": "Calendar",
+    "stats": "Stats",
+    "plans": "Plans",
+    "settings": "Settings"
+  }
+}

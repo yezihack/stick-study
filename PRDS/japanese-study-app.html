@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>日語学習 · 打卡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1f1a;
+  --ink-light: #2e352e;
+  --ink-mid: #3d463d;
+  --paper: #f4f0e8;
+  --paper-warm: #ede8dc;
+  --paper-dim: #d6d0c4;
+  --sakura: #c0544a;
+  --sakura-light: #d9766e;
+  --sakura-pale: rgba(192,84,74,0.12);
+  --gold: #b8962a;
+  --gold-pale: rgba(184,150,42,0.15);
+  --moss: #4a6741;
+  --moss-pale: rgba(74,103,65,0.2);
+  --text-main: #1a1f1a;
+  --text-muted: #5a6355;
+  --text-dim: #8a9485;
+  --border: rgba(26,31,26,0.12);
+  --border-mid: rgba(26,31,26,0.2);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--ink);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+}
+
+/* === PHONE SHELL === */
+.phone {
+  width: 375px;
+  min-height: 812px;
+  background: var(--ink-light);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+.phone-notch {
+  height: 44px;
+  background: var(--ink-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+.notch-pill {
+  width: 120px; height: 34px;
+  background: var(--ink);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.notch-cam {
+  width: 12px; height: 12px;
+  background: #1e2c1e;
+  border-radius: 50%;
+  border: 2px solid #0a120a;
+  position: relative;
+}
+.notch-cam::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 3px; height: 3px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+}
+.notch-speaker {
+  width: 52px; height: 5px;
+  background: #0d170d;
+  border-radius: 4px;
+}
+
+/* === SCREEN === */
+.screen {
+  display: none;
+  height: calc(812px - 44px - 72px);
+  overflow-y: auto;
+  background: var(--paper);
+  scrollbar-width: none;
+}
+.screen::-webkit-scrollbar { display: none; }
+.screen.active { display: block; }
+
+/* === STATUS BAR === */
+.status-bar {
+  background: var(--paper);
+  padding: 8px 20px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text-muted);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.status-time { font-weight: 400; letter-spacing: 0.02em; }
+.status-icons { display: flex; gap: 5px; align-items: center; }
+.status-icons svg { opacity: 0.7; }
+
+/* === BOTTOM NAV === */
+.bottom-nav {
+  height: 72px;
+  background: var(--ink-light);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 8px;
+}
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  transition: all 0.2s;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.05); }
+.nav-btn.active .nav-icon { color: var(--sakura-light); }
+.nav-btn.active .nav-label { color: var(--paper-dim); }
+.nav-icon {
+  font-size: 20px;
+  color: var(--text-dim);
+  line-height: 1;
+  transition: color 0.2s;
+}
+.nav-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  color: rgba(180,180,160,0.5);
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+}
+
+/* === TODAY SCREEN === */
+.today-header {
+  padding: 12px 20px 16px;
+}
+.today-greeting {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.today-date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.today-date {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--gold-pale);
+  border: 1px solid rgba(184,150,42,0.3);
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+.streak-fire { font-size: 14px; }
+.streak-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 400;
+}
+
+/* Progress bar */
+.progress-section {
+  padding: 0 20px 16px;
+}
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.progress-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+.progress-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.progress-track {
+  height: 4px;
+  background: var(--paper-warm);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--sakura);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Plan card */
+.plan-chip {
+  margin: 0 20px 16px;
+  background: var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.plan-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--sakura-light);
+  flex-shrink: 0;
+}
+.plan-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12px;
+  color: var(--paper-dim);
+  flex: 1;
+  letter-spacing: 0.04em;
+}
+.plan-range {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(180,180,160,0.5);
+}
+
+/* Section header */
+.section-header {
+  padding: 4px 20px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.section-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.section-action {
+  font-size: 11px;
+  color: var(--sakura);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(192,84,74,0.3);
+  background: var(--sakura-pale);
+  letter-spacing: 0.02em;
+}
+
+/* Task cards */
+.task-list { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 8px; }
+
+.task-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 14px 14px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.task-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--border);
+  transition: background 0.2s;
+}
+.task-card.done { background: var(--paper-warm); }
+.task-card.done::before { background: var(--sakura); }
+.task-card:active { transform: scale(0.98); }
+
+.task-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-mid);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  background: transparent;
+}
+.task-card.done .task-check {
+  background: var(--sakura);
+  border-color: var(--sakura);
+}
+.check-mark {
+  display: none;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+}
+.task-card.done .check-mark { display: block; }
+
+.task-body { flex: 1; }
+.task-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-main);
+  margin-bottom: 3px;
+  transition: color 0.2s;
+  line-height: 1.4;
+}
+.task-card.done .task-name {
+  color: var(--text-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--sakura-light);
+}
+.task-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.task-card.done .task-meta { opacity: 0.6; }
+
+.task-type-badge {
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+}
+.badge-questions { background: rgba(74,103,65,0.12); color: var(--moss); }
+.badge-grammar { background: rgba(184,150,42,0.12); color: var(--gold); }
+.badge-pages { background: rgba(192,84,74,0.1); color: var(--sakura); }
+.badge-listening { background: rgba(59,78,130,0.1); color: #3b4e82; }
+.badge-vocab { background: rgba(100,70,130,0.1); color: #644682; }
+
+/* Note section */
+.note-section {
+  margin: 0 16px 16px;
+}
+.note-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  position: relative;
+}
+.note-label {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  letter-spacing: 0.08em;
+}
+.note-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  color: var(--text-main);
+  resize: none;
+  background: transparent;
+  min-height: 56px;
+  line-height: 1.7;
+}
+.note-input::placeholder { color: var(--text-dim); }
+
+/* Complete banner */
+.complete-banner {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, #2a3a2a, #1e2e1e);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  display: none;
+  animation: bannerIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.complete-banner.show { display: block; }
+@keyframes bannerIn {
+  from { opacity: 0; transform: translateY(-10px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.banner-emoji { font-size: 28px; margin-bottom: 6px; }
+.banner-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--paper);
+  margin-bottom: 4px;
+  letter-spacing: 0.04em;
+}
+.banner-sub { font-size: 12px; color: rgba(180,180,160,0.7); letter-spacing: 0.03em; }
+
+/* === CALENDAR SCREEN === */
+.calendar-header {
+  padding: 12px 20px 0;
+}
+.cal-month-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.cal-month {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+.cal-nav { display: flex; gap: 4px; }
+.cal-nav-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: white;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+.cal-nav-btn:hover { background: var(--paper-warm); }
+
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 16px;
+  margin-bottom: 4px;
+}
+.cal-wd {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  padding: 4px 0;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0 16px 16px;
+  gap: 4px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+  gap: 2px;
+}
+.cal-day-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1;
+}
+.cal-day.empty .cal-day-num { color: transparent; }
+.cal-day.other-month .cal-day-num { color: var(--paper-dim); }
+.cal-day.today { background: var(--ink); }
+.cal-day.today .cal-day-num { color: var(--paper); }
+.cal-day:not(.empty):not(.other-month):hover { background: var(--paper-warm); }
+
+.cal-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+.cal-day.full-done .cal-dot { background: var(--sakura); }
+.cal-day.part-done .cal-dot { background: var(--gold); }
+.cal-day.no-done .cal-dot { background: var(--border-mid); }
+
+/* Streak card */
+.streak-card {
+  margin: 0 16px 16px;
+  background: var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+}
+.streak-item { flex: 1; text-align: center; }
+.streak-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 28px;
+  color: var(--paper);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.streak-lbl {
+  font-size: 11px;
+  color: rgba(180,180,160,0.6);
+  letter-spacing: 0.06em;
+}
+.streak-divider {
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 4px 0;
+}
+
+/* History list */
+.history-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.history-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.history-date-box {
+  width: 40px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.h-date-day {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  color: var(--text-main);
+  line-height: 1;
+}
+.h-date-wd {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+.history-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border);
+}
+.history-body { flex: 1; }
+.history-tasks {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.history-rate {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.history-status {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-full { background: var(--sakura); }
+.status-part { background: var(--gold); }
+
+/* === STATS SCREEN === */
+.stats-hero {
+  padding: 12px 20px 16px;
+  background: var(--ink);
+  margin-bottom: 16px;
+}
+.stats-hero-label {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  color: rgba(180,180,160,0.6);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.stats-hero-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 48px;
+  color: var(--paper);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stats-hero-sub { font-size: 12px; color: rgba(180,180,160,0.5); letter-spacing: 0.04em; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+.stat-mini {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.stat-mini-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 24px;
+  color: var(--text-main);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-mini-lbl {
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+/* Chart */
+.chart-section {
+  padding: 0 16px 16px;
+}
+.chart-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.chart-title {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+}
+.bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar-fill {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--sakura);
+  opacity: 0.7;
+  transition: height 0.3s;
+  min-height: 4px;
+}
+.bar-fill.today-bar { opacity: 1; }
+.bar-fill.empty-bar { background: var(--paper-warm); opacity: 1; }
+.bar-day {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+/* Type breakdown */
+.type-breakdown {
+  padding: 0 16px 16px;
+}
+.type-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.type-item:last-child { border-bottom: none; }
+.type-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.type-body { flex: 1; }
+.type-name { font-size: 13px; color: var(--text-main); margin-bottom: 4px; }
+.type-bar-track {
+  height: 3px;
+  background: var(--paper-warm);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.type-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+}
+.type-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* === PLANS SCREEN === */
+.plan-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+.plan-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.plan-card-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.plan-color-bar {
+  width: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+.plan-card-body { flex: 1; }
+.plan-card-name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-bottom: 3px;
+}
+.plan-card-book {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-style: italic;
+}
+.plan-card-dates {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.plan-active-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--moss);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.plan-card-tasks {
+  padding: 10px 16px 14px 32px;
+  border-top: 1px solid var(--border);
+  background: var(--paper);
+}
+.task-template-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+.task-template-type {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  min-width: 42px;
+  text-align: center;
+}
+.task-template-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex: 1;
+}
+.task-template-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.add-plan-btn {
+  margin: 4px 16px 24px;
+  width: calc(100% - 32px);
+  padding: 14px;
+  background: transparent;
+  border: 1.5px dashed var(--border-mid);
+  border-radius: var(--radius);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 14px;
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+}
+.add-plan-btn:hover {
+  background: var(--paper-warm);
+  border-color: var(--sakura);
+  color: var(--sakura);
+}
+
+/* === SETTINGS SCREEN === */
+.settings-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.settings-group {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row:hover { background: var(--paper); }
+.settings-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.settings-text { flex: 1; }
+.settings-name { font-size: 14px; color: var(--text-main); margin-bottom: 2px; }
+.settings-desc { font-size: 11px; color: var(--text-dim); }
+.settings-right {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.settings-arrow { color: var(--text-dim); font-size: 16px; }
+
+.toggle {
+  width: 40px; height: 22px;
+  border-radius: 11px;
+  background: var(--border-mid);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle.on { background: var(--sakura); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle.on::after { transform: translateX(18px); }
+
+.settings-footer {
+  padding: 16px 20px 24px;
+  text-align: center;
+}
+.settings-version {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.settings-tagline {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Notch -->
+  <div class="phone-notch">
+    <div class="notch-pill">
+      <div class="notch-cam"></div>
+      <div class="notch-speaker"></div>
+    </div>
+  </div>
+
+  <!-- ===== TODAY SCREEN ===== -->
+  <div class="screen active" id="screen-today">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <rect x="0" y="4" width="3" height="8" rx="1" fill="currentColor"/>
+          <rect x="4.5" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/>
+          <rect x="9" y="0.5" width="3" height="11.5" rx="1" fill="currentColor"/>
+          <rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <svg width="15" height="12" viewBox="0 0 15 12"><path d="M7.5 2C10.3 2 12.8 3.2 14.5 5.1L13 6.5C11.7 5 9.7 4 7.5 4S3.3 5 2 6.5L.5 5.1C2.2 3.2 4.7 2 7.5 2zm0 4c1.7 0 3.2.7 4.3 1.8L10.3 9.3C9.6 8.5 8.6 8 7.5 8s-2.1.5-2.8 1.3L3.2 7.8C4.3 6.7 5.8 6 7.5 6zm0 4c.8 0 1.5.7 1.5 1.5S8.3 13 7.5 13 6 12.3 6 11.5 6.7 10 7.5 10z" fill="currentColor"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="3" stroke="currentColor" stroke-width="1.2" fill="none"/><rect x="22.5" y="3.5" width="2" height="5" rx="1" fill="currentColor" opacity="0.5"/><rect x="1.5" y="2.5" width="16" height="7" rx="2" fill="currentColor"/></svg>
+      </div>
+    </div>
+
+    <div class="today-header">
+      <div class="today-greeting">おはようございます</div>
+      <div class="today-date-row">
+        <div class="today-date">6月2日 月曜日</div>
+        <div class="streak-badge">
+          <span class="streak-fire">🔥</span>
+          <span class="streak-text">12 days</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-meta">
+        <span class="progress-label">今日の進捗</span>
+        <span class="progress-count" id="progress-text">2 / 6 完了</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width: 33%"></div>
+      </div>
+    </div>
+
+    <div class="plan-chip">
+      <div class="plan-dot"></div>
+      <div class="plan-name">新完全マスター N2 文法</div>
+      <div class="plan-range">〜 7月31日</div>
+    </div>
+
+    <div id="complete-banner" class="complete-banner">
+      <div class="banner-emoji">🌸</div>
+      <div class="banner-title">今日の打卡完了！</div>
+      <div class="banner-sub">素晴らしい！連続13日目達成</div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-title">タスク</span>
+      <span class="section-action" onclick="addTempTask()">+ 追加</span>
+    </div>
+
+    <div class="task-list" id="task-list">
+      <div class="task-card done" onclick="toggleTask(this)">
+        <div class="task-check"><span class="check-mark">✓</span></div>
+        <div class="task-body">
+          <div class="task-name">文法問題を解く</div>
+          <div class="task-meta">20問 · 新完全マスター N2</div>
+        </div>
+        <div class="task-type-badge badge-questions">問題</div>
+      </div>
+
+      <div class="task-card done" onclick="toggleTask(this)">
+        <div class="task-check"><span class="check-mark">✓</span></div>
+        <div class="task-body">
+          <div class="task-name">新しい語彙を覚える</div>
+          <div class="task-meta">30単語 · 単語帳</div>
+        </div>
+        <div class="task-type-badge badge-vocab">語彙</div>
+      </div>
+
+      <div class="task-card" onclick="toggleTask(this)">
+        <div class="task-check"><span class="check-mark">✓</span></div>
+        <div class="task-body">
+          <div class="task-name">文法項目を学ぶ</div>
+          <div class="task-meta">10項目 · Chapter 3</div>
+        </div>
+        <div class="task-type-badge badge-grammar">文法</div>
+      </div>
+
+      <div class="task-card" onclick="toggleTask(this)">
+        <div class="task-check"><span class="check-mark">✓</span></div>
+        <div class="task-body">
+          <div class="task-name">参考書を読む</div>
+          <div class="task-meta">5ページ · 読解練習</div>
+        </div>
+        <div class="task-type-badge badge-pages">読書</div>
+      </div>
+
+      <div class="task-card" onclick="toggleTask(this)">
+        <div class="task-check"><span class="check-mark">✓</span></div>
+        <div class="task-body">
+          <div class="task-name">リスニング練習</div>
+          <div class="task-meta">15分 · N2 聴解</div>
+        </div>
+        <div class="task-type-badge badge-listening">聴解</div>
+      </div>
+
+      <div class="task-card" onclick="toggleTask(this)">
+        <div class="task-check"><span class="check-mark">✓</span></div>
+        <div class="task-body">
+          <div class="task-name">復習する</div>
+          <div class="task-meta">昨日の内容 · 20分</div>
+        </div>
+        <div class="task-type-badge badge-grammar">復習</div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top: 4px;">
+      <span class="section-title">今日のメモ</span>
+    </div>
+
+    <div class="note-section">
+      <div class="note-box">
+        <div class="note-label">学習メモ · 気づき</div>
+        <textarea class="note-input" placeholder="今日学んだこと、気づいたことを書きましょう…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CALENDAR SCREEN ===== -->
+  <div class="screen" id="screen-calendar">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="3" stroke="currentColor" stroke-width="1.2" fill="none"/><rect x="22.5" y="3.5" width="2" height="5" rx="1" fill="currentColor" opacity="0.5"/><rect x="1.5" y="2.5" width="16" height="7" rx="2" fill="currentColor"/></svg>
+      </div>
+    </div>
+
+    <div class="calendar-header">
+      <div class="cal-month-row">
+        <div class="cal-month">2025年 6月</div>
+        <div class="cal-nav">
+          <button class="cal-nav-btn">‹</button>
+          <button class="cal-nav-btn">›</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cal-weekdays">
+      <div class="cal-wd">日</div><div class="cal-wd">月</div><div class="cal-wd">火</div>
+      <div class="cal-wd">水</div><div class="cal-wd">木</div><div class="cal-wd">金</div>
+      <div class="cal-wd">土</div>
+    </div>
+
+    <div class="cal-grid">
+      <!-- May remainder -->
+      <div class="cal-day other-month"><div class="cal-day-num">25</div></div>
+      <div class="cal-day other-month"><div class="cal-day-num">26</div></div>
+      <div class="cal-day other-month"><div class="cal-day-num">27</div></div>
+      <div class="cal-day other-month"><div class="cal-day-num">28</div></div>
+      <div class="cal-day other-month"><div class="cal-day-num">29</div></div>
+      <div class="cal-day other-month"><div class="cal-day-num">30</div></div>
+      <div class="cal-day other-month"><div class="cal-day-num">31</div></div>
+      <!-- June -->
+      <div class="cal-day full-done"><div class="cal-day-num">1</div><div class="cal-dot"></div></div>
+      <div class="cal-day today"><div class="cal-day-num">2</div><div class="cal-dot" style="background:var(--sakura-light)"></div></div>
+      <div class="cal-day"><div class="cal-day-num">3</div></div>
+      <div class="cal-day"><div class="cal-day-num">4</div></div>
+      <div class="cal-day"><div class="cal-day-num">5</div></div>
+      <div class="cal-day"><div class="cal-day-num">6</div></div>
+      <div class="cal-day"><div class="cal-day-num">7</div></div>
+      <div class="cal-day"><div class="cal-day-num">8</div></div>
+      <div class="cal-day"><div class="cal-day-num">9</div></div>
+      <div class="cal-day"><div class="cal-day-num">10</div></div>
+      <div class="cal-day"><div class="cal-day-num">11</div></div>
+      <div class="cal-day"><div class="cal-day-num">12</div></div>
+      <div class="cal-day"><div class="cal-day-num">13</div></div>
+      <div class="cal-day"><div class="cal-day-num">14</div></div>
+      <div class="cal-day"><div class="cal-day-num">15</div></div>
+      <div class="cal-day"><div class="cal-day-num">16</div></div>
+      <div class="cal-day"><div class="cal-day-num">17</div></div>
+      <div class="cal-day"><div class="cal-day-num">18</div></div>
+      <div class="cal-day"><div class="cal-day-num">19</div></div>
+      <div class="cal-day"><div class="cal-day-num">20</div></div>
+      <div class="cal-day"><div class="cal-day-num">21</div></div>
+      <div class="cal-day"><div class="cal-day-num">22</div></div>
+      <div class="cal-day"><div class="cal-day-num">23</div></div>
+      <div class="cal-day"><div class="cal-day-num">24</div></div>
+      <div class="cal-day"><div class="cal-day-num">25</div></div>
+      <div class="cal-day"><div class="cal-day-num">26</div></div>
+      <div class="cal-day"><div class="cal-day-num">27</div></div>
+      <div class="cal-day"><div class="cal-day-num">28</div></div>
+      <div class="cal-day"><div class="cal-day-num">29</div></div>
+      <div class="cal-day"><div class="cal-day-num">30</div></div>
+    </div>
+
+    <div class="streak-card">
+      <div class="streak-item">
+        <div class="streak-num">12</div>
+        <div class="streak-lbl">連続日数</div>
+      </div>
+      <div class="streak-divider"></div>
+      <div class="streak-item">
+        <div class="streak-num">24</div>
+        <div class="streak-lbl">今月完了</div>
+      </div>
+      <div class="streak-divider"></div>
+      <div class="streak-item">
+        <div class="streak-num">80%</div>
+        <div class="streak-lbl">達成率</div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-title">最近の記録</span>
+    </div>
+
+    <div class="history-list">
+      <div class="history-item">
+        <div class="history-date-box">
+          <div class="h-date-day">01</div>
+          <div class="h-date-wd">日</div>
+        </div>
+        <div class="history-divider"></div>
+        <div class="history-body">
+          <div class="history-tasks">文法20問・語彙30語・読書5頁・聴解15分</div>
+          <div class="history-rate">6/6 タスク完了</div>
+        </div>
+        <div class="history-status status-full"></div>
+      </div>
+      <div class="history-item">
+        <div class="history-date-box">
+          <div class="h-date-day">31</div>
+          <div class="h-date-wd">土</div>
+        </div>
+        <div class="history-divider"></div>
+        <div class="history-body">
+          <div class="history-tasks">文法20問・語彙30語・文法10項目</div>
+          <div class="history-rate">4/6 タスク完了</div>
+        </div>
+        <div class="history-status status-part"></div>
+      </div>
+      <div class="history-item">
+        <div class="history-date-box">
+          <div class="h-date-day">30</div>
+          <div class="h-date-wd">金</div>
+        </div>
+        <div class="history-divider"></div>
+        <div class="history-body">
+          <div class="history-tasks">全タスク完了・メモあり</div>
+          <div class="history-rate">6/6 タスク完了</div>
+        </div>
+        <div class="history-status status-full"></div>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ===== STATS SCREEN ===== -->
+  <div class="screen" id="screen-stats">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+    </div>
+
+    <div class="stats-hero">
+      <div class="stats-hero-label">累計学習実績</div>
+      <div class="stats-hero-num">847</div>
+      <div class="stats-hero-sub">総タスク完了数 · 2025年1月より</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-mini">
+        <div class="stat-mini-val">1,680</div>
+        <div class="stat-mini-lbl">問題を解いた</div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-val">520</div>
+        <div class="stat-mini-lbl">文法を学んだ</div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-val">215</div>
+        <div class="stat-mini-lbl">読書ページ数</div>
+      </div>
+      <div class="stat-mini">
+        <div class="stat-mini-val">1,200</div>
+        <div class="stat-mini-lbl">覚えた単語数</div>
+      </div>
+    </div>
+
+    <div class="chart-section">
+      <div class="chart-card">
+        <div class="chart-title">今週の完了状況</div>
+        <div class="bar-chart">
+          <div class="bar-col">
+            <div class="bar-fill" style="height:66px"></div>
+            <div class="bar-day">月</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-fill" style="height:50px"></div>
+            <div class="bar-day">火</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-fill" style="height:66px"></div>
+            <div class="bar-day">水</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-fill" style="height:33px"></div>
+            <div class="bar-day">木</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-fill" style="height:66px"></div>
+            <div class="bar-day">金</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-fill" style="height:50px"></div>
+            <div class="bar-day">土</div>
+          </div>
+          <div class="bar-col">
+            <div class="bar-fill today-bar" style="height:33px"></div>
+            <div class="bar-day" style="color:var(--sakura);font-weight:500">日</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-title">タスクタイプ別</span>
+    </div>
+
+    <div class="type-breakdown" style="margin: 0 16px; background:white; border:1px solid var(--border); border-radius:var(--radius-sm); padding: 4px 14px 4px;">
+      <div class="type-item">
+        <div class="type-icon" style="background:rgba(74,103,65,0.1)">📝</div>
+        <div class="type-body">
+          <div class="type-name">問題演習</div>
+          <div class="type-bar-track">
+            <div class="type-bar-fill" style="width:85%; background:var(--moss)"></div>
+          </div>
+        </div>
+        <div class="type-count">1,680問</div>
+      </div>
+      <div class="type-item">
+        <div class="type-icon" style="background:rgba(184,150,42,0.1)">📖</div>
+        <div class="type-body">
+          <div class="type-name">文法学習</div>
+          <div class="type-bar-track">
+            <div class="type-bar-fill" style="width:60%; background:var(--gold)"></div>
+          </div>
+        </div>
+        <div class="type-count">520項目</div>
+      </div>
+      <div class="type-item">
+        <div class="type-icon" style="background:rgba(192,84,74,0.1)">📚</div>
+        <div class="type-body">
+          <div class="type-name">読書</div>
+          <div class="type-bar-track">
+            <div class="type-bar-fill" style="width:30%; background:var(--sakura)"></div>
+          </div>
+        </div>
+        <div class="type-count">215ページ</div>
+      </div>
+      <div class="type-item">
+        <div class="type-icon" style="background:rgba(59,78,130,0.1)">🎧</div>
+        <div class="type-body">
+          <div class="type-name">聴解練習</div>
+          <div class="type-bar-track">
+            <div class="type-bar-fill" style="width:45%; background:#3b4e82"></div>
+          </div>
+        </div>
+        <div class="type-count">48時間</div>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ===== PLANS SCREEN ===== -->
+  <div class="screen" id="screen-plans">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+    </div>
+
+    <div class="section-header" style="padding-top: 12px;">
+      <span class="section-title">学習計画</span>
+      <span class="section-action">+ 新規</span>
+    </div>
+
+    <div class="plan-list">
+      <div class="plan-card">
+        <div class="plan-card-header">
+          <div class="plan-color-bar" style="background:var(--sakura)"></div>
+          <div class="plan-card-body">
+            <div class="plan-card-name">N2 文法マスター</div>
+            <div class="plan-card-book">新完全マスター N2 文法</div>
+            <div class="plan-card-dates">2025/04/01 〜 2025/07/31</div>
+          </div>
+          <div class="plan-active-dot"></div>
+        </div>
+        <div class="plan-card-tasks">
+          <div class="task-template-row">
+            <div class="task-template-type badge-questions">問題</div>
+            <div class="task-template-desc">文法問題を解く</div>
+            <div class="task-template-num">×20</div>
+          </div>
+          <div class="task-template-row">
+            <div class="task-template-type badge-grammar">文法</div>
+            <div class="task-template-desc">文法項目を学ぶ</div>
+            <div class="task-template-num">×10</div>
+          </div>
+          <div class="task-template-row">
+            <div class="task-template-type badge-pages">読書</div>
+            <div class="task-template-desc">参考書を読む</div>
+            <div class="task-template-num">×5p</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-card-header">
+          <div class="plan-color-bar" style="background:var(--gold)"></div>
+          <div class="plan-card-body">
+            <div class="plan-card-name">語彙強化</div>
+            <div class="plan-card-book">日本語総まとめ N2 語彙</div>
+            <div class="plan-card-dates">2025/05/01 〜 2025/08/31</div>
+          </div>
+          <div class="plan-active-dot" style="background:var(--gold)"></div>
+        </div>
+        <div class="plan-card-tasks">
+          <div class="task-template-row">
+            <div class="task-template-type badge-vocab">語彙</div>
+            <div class="task-template-desc">新しい語彙を覚える</div>
+            <div class="task-template-num">×30</div>
+          </div>
+          <div class="task-template-row">
+            <div class="task-template-type badge-questions">復習</div>
+            <div class="task-template-desc">昨日の語彙を復習</div>
+            <div class="task-template-num">×30</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="plan-card" style="opacity:0.65">
+        <div class="plan-card-header">
+          <div class="plan-color-bar" style="background:var(--text-dim)"></div>
+          <div class="plan-card-body">
+            <div class="plan-card-name">読解練習</div>
+            <div class="plan-card-book">日本語能力試験 N2 読解</div>
+            <div class="plan-card-dates">2025/01/10 〜 2025/03/31 · 完了</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="add-plan-btn">＋ 新しい計画を追加</button>
+  </div>
+
+  <!-- ===== SETTINGS SCREEN ===== -->
+  <div class="screen" id="screen-settings">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+    </div>
+
+    <div class="section-header" style="padding-top:12px;">
+      <span class="section-title">設定</span>
+    </div>
+
+    <div class="settings-list">
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="settings-icon" style="background:rgba(192,84,74,0.1)">🔔</div>
+          <div class="settings-text">
+            <div class="settings-name">リマインダー</div>
+            <div class="settings-desc">毎日 8:00 に通知</div>
+          </div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-icon" style="background:rgba(184,150,42,0.1)">⏰</div>
+          <div class="settings-text">
+            <div class="settings-name">通知時刻</div>
+            <div class="settings-desc">学習リマインダーの時刻</div>
+          </div>
+          <div class="settings-right">08:00</div>
+          <div class="settings-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="settings-icon" style="background:rgba(74,103,65,0.12)">🌙</div>
+          <div class="settings-text">
+            <div class="settings-name">ダークモード</div>
+            <div class="settings-desc">外観のテーマ設定</div>
+          </div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-row">
+          <div class="settings-icon" style="background:rgba(59,78,130,0.1)">📤</div>
+          <div class="settings-text">
+            <div class="settings-name">データをエクスポート</div>
+            <div class="settings-desc">JSON形式でバックアップ</div>
+          </div>
+          <div class="settings-arrow">›</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-icon" style="background:rgba(59,78,130,0.1)">📥</div>
+          <div class="settings-text">
+            <div class="settings-name">データをインポート</div>
+            <div class="settings-desc">バックアップから復元</div>
+          </div>
+          <div class="settings-arrow">›</div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-icon" style="background:rgba(192,84,74,0.08)">🗑️</div>
+          <div class="settings-text">
+            <div class="settings-name" style="color:var(--sakura)">データを削除</div>
+            <div class="settings-desc">すべてのデータを消去</div>
+          </div>
+          <div class="settings-arrow">›</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-footer">
+      <div class="settings-version">日語学習打卡 v1.0.0</div>
+      <div class="settings-tagline">毎日少しずつ、必ず上達する</div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-today" onclick="switchTab('today')">
+      <div class="nav-icon">✦</div>
+      <div class="nav-label">今日</div>
+    </button>
+    <button class="nav-btn" id="nav-calendar" onclick="switchTab('calendar')">
+      <div class="nav-icon">◫</div>
+      <div class="nav-label">カレンダー</div>
+    </button>
+    <button class="nav-btn" id="nav-stats" onclick="switchTab('stats')">
+      <div class="nav-icon">⌇</div>
+      <div class="nav-label">統計</div>
+    </button>
+    <button class="nav-btn" id="nav-plans" onclick="switchTab('plans')">
+      <div class="nav-icon">≡</div>
+      <div class="nav-label">計画</div>
+    </button>
+    <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">
+      <div class="nav-icon">⊙</div>
+      <div class="nav-label">設定</div>
+    </button>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+}
+
+function toggleTask(card) {
+  card.classList.toggle('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const tasks = document.querySelectorAll('.task-card');
+  const done = document.querySelectorAll('.task-card.done');
+  const total = tasks.length;
+  const count = done.length;
+  const pct = Math.round((count / total) * 100);
+
+  document.getElementById('progress-text').textContent = count + ' / ' + total + ' 完了';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  const banner = document.getElementById('complete-banner');
+  if (count === total) {
+    banner.classList.add('show');
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function addTempTask() {
+  const list = document.getElementById('task-list');
+  const card = document.createElement('div');
+  card.className = 'task-card';
+  card.onclick = function() { toggleTask(this); };
+  card.innerHTML = `
+    <div class="task-check"><span class="check-mark">✓</span></div>
+    <div class="task-body">
+      <div class="task-name">追加タスク</div>
+      <div class="task-meta">臨時 · 今日だけ</div>
+    </div>
+    <div class="task-type-badge badge-grammar">カスタム</div>
+  `;
+  card.style.animation = 'bannerIn 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+  list.appendChild(card);
+  updateProgress();
+}
+</script>
+</body>
+</html>

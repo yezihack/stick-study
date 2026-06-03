@@ -1,0 +1,53 @@
+/* Global CSS Variables - Japanese Journal Aesthetic */
+
+:root {
+  /* Colors */
+  --ink: #1a1f1a;
+  --paper: #f4f0e8;
+  --sakura: #c0544a;
+  --gold: #b8962a;
+  --moss: #4a6741;
+  
+  /* Typography */
+  --font-sans: 'Noto Sans', 'Noto Sans SC', 'Noto Sans JP', system-ui, sans-serif;
+  --font-serif: 'Noto Serif', 'Noto Serif JP', serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+  
+  /* Spacing */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --nav-height: 72px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(26, 31, 26, 0.08);
+  --shadow-md: 0 4px 16px rgba(26, 31, 26, 0.12);
+}
+
+/* Global Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  min-height: 100vh;
+  padding-bottom: var(--nav-height);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
