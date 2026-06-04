@@ -2,16 +2,28 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import i18n, { loadLocaleFromDB } from './i18n'
-import { initializeDatabase } from './db'
+import { initializeDatabase, getConfig } from './db'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(i18n)
 
+// Apply saved dark mode preference before mount
+async function applySavedTheme() {
+  try {
+    const config = await getConfig()
+    if (config?.darkMode) {
+      document.documentElement.classList.add('dark')
+    }
+  } catch (error) {
+    console.error('Failed to apply saved theme:', error)
+  }
+}
+
 // Initialize database and load saved locale before mounting
 initializeDatabase()
-  .then(() => loadLocaleFromDB())
+  .then(() => Promise.all([loadLocaleFromDB(), applySavedTheme()]))
   .then(() => {
     app.mount('#app')
     console.log('🚀 App mounted with database initialized')

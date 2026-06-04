@@ -33,11 +33,12 @@ import type { CalendarDay } from '@/composables/useCalendar'
 defineProps<{ days: CalendarDay[] }>()
 defineEmits<{ select: [date: string] }>()
 
-const { t } = useI18n()
+const { tm, rt } = useI18n()
 
-const weekdayLabels = computed(() => {
-  const raw = t('calendar.weekdays')
-  return Array.isArray(raw) ? raw : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+const weekdayLabels = computed<string[]>(() => {
+  const raw = tm('calendar.weekdays') as unknown[]
+  const fallback = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return Array.isArray(raw) ? raw.map(m => rt(m as string)) : fallback
 })
 </script>
 

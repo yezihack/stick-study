@@ -16,6 +16,7 @@
             v-for="plan in activePlans"
             :key="plan.id"
             :plan="plan"
+            :templates="templatesByPlan[plan.id]"
             @edit="openEdit"
             @toggle="toggleActive"
           />
@@ -30,6 +31,7 @@
             v-for="plan in archivedPlans"
             :key="plan.id"
             :plan="plan"
+            :templates="templatesByPlan[plan.id]"
             @edit="openEdit"
             @toggle="toggleActive"
           />
@@ -38,7 +40,9 @@
 
       <!-- Empty state -->
       <div v-if="plans.length === 0" class="empty-state">
-        <p class="empty-icon">📚</p>
+        <span class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/></svg>
+        </span>
         <p class="empty-title">{{ t('plans.noPlans') }}</p>
         <p class="empty-sub">{{ t('plans.noPlansSub') }}</p>
         <button class="cta-btn" @click="openCreate">{{ t('plans.newPlan') }}</button>
@@ -70,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import PlanCard from '@/components/PlanCard.vue'
 import PlanForm from '@/components/PlanForm.vue'
@@ -97,6 +101,18 @@ const showForm = ref(false)
 const editingPlan = ref<Plan | null>(null)
 const editingTemplates = ref<TaskTemplate[]>([])
 const confirmArchiveId = ref<string | null>(null)
+
+// ── Templates per plan (for card sub-task display) ───────
+const templatesByPlan = ref<Record<string, TaskTemplate[]>>({})
+
+async function loadTemplates() {
+  const all = await db.taskTemplates.toArray()
+  const map: Record<string, TaskTemplate[]> = {}
+  for (const tpl of all) {
+    ;(map[tpl.planId] ??= []).push(tpl)
+  }
+  templatesByPlan.value = map
+}
 
 function openCreate() {
   editingPlan.value = null
@@ -130,8 +146,9 @@ async function handleSave(
       await db.taskTemplates.add({
         id: crypto.randomUUID(),
         planId,
-        weekdays: tpl.weekdays,
-        items: tpl.items
+        // Strip Vue reactive proxies — IndexedDB can't structured-clone them
+        weekdays: toRaw(tpl.weekdays).slice(),
+        items: toRaw(tpl.items).map(i => ({ ...toRaw(i) }))
       })
     }
   } else {
@@ -141,11 +158,13 @@ async function handleSave(
       await db.taskTemplates.add({
         id: crypto.randomUUID(),
         planId,
-        weekdays: tpl.weekdays,
-        items: tpl.items
+        // Strip Vue reactive proxies — IndexedDB can't structured-clone them
+        weekdays: toRaw(tpl.weekdays).slice(),
+        items: toRaw(tpl.items).map(i => ({ ...toRaw(i) }))
       })
     }
   }
+  await loadTemplates()
   closeForm()
 }
 
@@ -169,7 +188,10 @@ async function doArchive() {
   }
 }
 
-onMounted(() => load())
+onMounted(async () => {
+  await load()
+  await loadTemplates()
+})
 </script>
 
 <style scoped>
@@ -240,7 +262,13 @@ onMounted(() => load())
   padding: 3rem 1rem;
 }
 
-.empty-icon { font-size: 3rem; margin: 0 0 0.5rem; }
+.empty-icon {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 0.75rem;
+  color: rgba(26,31,26,0.25);
+}
+.empty-icon svg { width: 56px; height: 56px; }
 .empty-title { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin: 0 0 0.25rem; }
 .empty-sub { font-size: 0.85rem; color: rgba(26,31,26,0.5); margin: 0 0 1.25rem; }
 

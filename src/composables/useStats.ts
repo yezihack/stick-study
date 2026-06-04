@@ -6,7 +6,7 @@ import { TaskType } from '@/db/models'
 export type RangeKey = 'week' | 'month' | 'all'
 
 export interface WeekDay {
-  label: string   // e.g. "Mon"
+  weekday: number // 0=Sun … 6=Sat, resolved to localized label in the view
   date: string    // "YYYY-MM-DD"
   count: number   // completed tasks
   isToday: boolean
@@ -83,7 +83,7 @@ export function useStats() {
       const log = allLogs.value.find(l => l.date === dateStr)
       const count = log ? log.tasks.filter(t => t.completed).length : 0
       days.push({
-        label: d.toLocaleDateString('en-US', { weekday: 'short' }),
+        weekday: d.getDay(),
         date: dateStr,
         count,
         isToday: dateStr === todayISO

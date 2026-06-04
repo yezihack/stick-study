@@ -1,7 +1,7 @@
 /* Global CSS Variables - Japanese Journal Aesthetic */
 
 :root {
-  /* Colors */
+  /* Colors - Light Mode */
   --ink: #1a1f1a;
   --paper: #f4f0e8;
   --sakura: #c0544a;
@@ -21,6 +21,17 @@
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(26, 31, 26, 0.08);
   --shadow-md: 0 4px 16px rgba(26, 31, 26, 0.12);
+}
+
+/* Dark Mode */
+:root.dark {
+  --ink: #e8efe8;
+  --paper: #1a1f1a;
+  --sakura: #d86a60;
+  --gold: #d4a832;
+  --moss: #6a9761;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 /* Global Styles */

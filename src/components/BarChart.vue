@@ -13,21 +13,34 @@
           :style="{ height: barHeight(day.count) + '%' }"
         />
       </div>
-      <span class="bar-label">{{ day.label }}</span>
+      <span class="bar-label">{{ weekdayLabel(day.weekday) }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { WeekDay } from '@/composables/useStats'
 
 const props = defineProps<{ days: WeekDay[] }>()
+
+const { tm, rt } = useI18n()
 
 const maxCount = computed(() => Math.max(...props.days.map(d => d.count), 1))
 
 function barHeight(count: number): number {
   return Math.round((count / maxCount.value) * 100)
+}
+
+const weekdayLabels = computed<string[]>(() => {
+  const raw = tm('calendar.weekdays') as unknown[]
+  const fallback = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return Array.isArray(raw) ? raw.map(m => rt(m as string)) : fallback
+})
+
+function weekdayLabel(weekday: number): string {
+  return weekdayLabels.value[weekday] ?? ''
 }
 </script>
 

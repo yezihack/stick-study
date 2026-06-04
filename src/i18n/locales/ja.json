@@ -83,6 +83,10 @@
       "bookTitlePlaceholder": "例：新完全マスター文法",
       "startDate": "開始日",
       "endDate": "終了日",
+      "dateModeCalendar": "日付",
+      "dateModeDuration": "期間",
+      "duration": "学習期間",
+      "durationValue": "{days} 日間",
       "color": "テーマカラー",
       "templates": "毎日のタスクテンプレート",
       "addTemplate": "+ テンプレートを追加",
@@ -125,6 +129,14 @@
     "deleteDataSub": "削除したデータは復元できません",
     "deleteConfirm": "全データを削除しますか？この操作は取り消せません。",
     "storageSize": "使用ストレージ",
+    "reminderSub": "毎日の打刻リマインダー",
+    "toast": {
+      "exportSuccess": "データをエクスポートしました",
+      "importSuccess": "データをインポートしました",
+      "clearSuccess": "データを削除しました",
+      "reminderSet": "リマインダーを設定しました",
+      "permissionDenied": "通知の許可が拒否されました"
+    },
     "version": "バージョン",
     "slogan": "継続は力なり"
   },

@@ -30,20 +30,6 @@
       </div>
 
       <template v-else>
-        <!-- Active plan tags -->
-        <div class="plan-tags">
-          <span
-            v-for="plan in activePlans"
-            :key="plan.id"
-            class="plan-tag"
-            :style="{ borderColor: plan.color }"
-          >
-            <span class="plan-dot" :style="{ background: plan.color }" />
-            {{ plan.name }}
-            <span class="plan-ends">{{ t('today.planEnds', { date: plan.endDate }) }}</span>
-          </span>
-        </div>
-
         <!-- Progress -->
         <div class="progress-section">
           <ProgressBar :done="doneCount" :total="totalCount" />
@@ -280,38 +266,6 @@ onMounted(() => load())
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;
-}
-
-/* Plan tags */
-.plan-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 1rem;
-}
-
-.plan-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: 1.5px solid var(--sakura);
-  border-radius: 20px;
-  font-size: 0.78rem;
-  color: var(--ink);
-  background: white;
-}
-
-.plan-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.plan-ends {
-  font-size: 0.7rem;
-  opacity: 0.55;
 }
 
 /* Progress */

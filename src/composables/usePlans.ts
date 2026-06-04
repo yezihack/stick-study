@@ -22,7 +22,9 @@ export function usePlans() {
 
   async function load() {
     loading.value = true
-    plans.value = await db.plans.orderBy('createdAt').reverse().toArray()
+    const all = await db.plans.toArray()
+    // createdAt is not an indexed key, so sort in JS (descending = newest first)
+    plans.value = all.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     loading.value = false
   }
 

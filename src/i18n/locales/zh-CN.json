@@ -83,6 +83,10 @@
       "bookTitlePlaceholder": "例如：新完全マスター文法",
       "startDate": "开始日期",
       "endDate": "结束日期",
+      "dateModeCalendar": "日期",
+      "dateModeDuration": "时长",
+      "duration": "学习时长",
+      "durationValue": "{days} 天",
       "color": "主题色",
       "templates": "每日任务模板",
       "addTemplate": "+ 添加模板",
@@ -125,6 +129,14 @@
     "deleteDataSub": "清除后无法恢复",
     "deleteConfirm": "确认清除所有数据？此操作不可撤销。",
     "storageSize": "本地数据占用",
+    "reminderSub": "每日定时提醒打卡",
+    "toast": {
+      "exportSuccess": "数据已导出",
+      "importSuccess": "数据已导入",
+      "clearSuccess": "数据已清除",
+      "reminderSet": "提醒已设置",
+      "permissionDenied": "通知权限被拒绝"
+    },
     "version": "版本",
     "slogan": "坚持，是最好的学习方法"
   },

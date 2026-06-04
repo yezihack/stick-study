@@ -36,17 +36,65 @@
             />
           </div>
 
-          <!-- Dates -->
-          <div class="field-row-2">
-            <div class="field">
-              <label class="label" for="plan-start">{{ t('plans.form.startDate') }}</label>
-              <input id="plan-start" v-model="form.startDate" class="input" type="date" :class="{ error: errors.dates }" />
-            </div>
-            <div class="field">
-              <label class="label" for="plan-end">{{ t('plans.form.endDate') }}</label>
-              <input id="plan-end" v-model="form.endDate" class="input" type="date" :class="{ error: errors.dates }" />
+          <!-- Date / Duration -->
+          <div class="field">
+            <div class="date-mode-toggle">
+              <button
+                type="button"
+                class="mode-btn"
+                :class="{ active: dateMode === 'calendar' }"
+                @click="dateMode = 'calendar'"
+              >
+                {{ t('plans.form.dateModeCalendar') }}
+              </button>
+              <button
+                type="button"
+                class="mode-btn"
+                :class="{ active: dateMode === 'duration' }"
+                @click="switchToDuration"
+              >
+                {{ t('plans.form.dateModeDuration') }}
+              </button>
             </div>
           </div>
+
+          <!-- Calendar mode: two date pickers -->
+          <template v-if="dateMode === 'calendar'">
+            <div class="field-row-2">
+              <div class="field">
+                <label class="label" for="plan-start">{{ t('plans.form.startDate') }}</label>
+                <input id="plan-start" v-model="form.startDate" class="input" type="date" :class="{ error: errors.dates }" />
+              </div>
+              <div class="field">
+                <label class="label" for="plan-end">{{ t('plans.form.endDate') }}</label>
+                <input id="plan-end" v-model="form.endDate" class="input" type="date" :class="{ error: errors.dates }" />
+              </div>
+            </div>
+          </template>
+
+          <!-- Duration mode: start date + slider -->
+          <template v-else>
+            <div class="field">
+              <label class="label" for="plan-start-d">{{ t('plans.form.startDate') }}</label>
+              <input id="plan-start-d" v-model="form.startDate" class="input" type="date" :class="{ error: errors.dates }" />
+            </div>
+            <div class="field">
+              <div class="duration-header">
+                <label class="label" for="plan-duration">{{ t('plans.form.duration') }}</label>
+                <span class="duration-value">{{ t('plans.form.durationValue', { days: duration }) }}</span>
+              </div>
+              <input
+                id="plan-duration"
+                v-model.number="duration"
+                class="duration-slider"
+                type="range"
+                min="1"
+                max="30"
+                step="1"
+              />
+              <span class="duration-end">{{ t('plans.form.endDate') }}: {{ form.endDate || '—' }}</span>
+            </div>
+          </template>
           <span v-if="errors.dates" class="error-msg">{{ errors.dates }}</span>
 
           <!-- Color -->
@@ -164,10 +212,43 @@ type TemplateLocal = Omit<TaskTemplate, 'planId'>
 const localTemplates = ref<TemplateLocal[]>([])
 const errors = ref<{ name?: string; dates?: string }>({})
 
+// ── Date mode (calendar pickers vs duration slider) ───────
+const dateMode = ref<'calendar' | 'duration'>('calendar')
+const duration = ref(7) // days, 1–30
+
+function addDays(dateStr: string, days: number): string {
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return ''
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+function switchToDuration() {
+  dateMode.value = 'duration'
+  if (!form.value.startDate) {
+    form.value.startDate = new Date().toISOString().slice(0, 10)
+  }
+  // derive a sensible duration from existing dates if both present
+  if (form.value.startDate && form.value.endDate) {
+    const diff = Math.round(
+      (new Date(form.value.endDate).getTime() - new Date(form.value.startDate).getTime()) / 86400000
+    ) + 1
+    duration.value = Math.min(30, Math.max(1, diff))
+  }
+}
+
+// In duration mode, keep endDate = startDate + (duration - 1) days
+watch([duration, () => form.value.startDate], () => {
+  if (dateMode.value !== 'duration' || !form.value.startDate) return
+  form.value.endDate = addDays(form.value.startDate, duration.value - 1)
+})
+
 // ── Sync with editing plan ────────────────────────────────
 watch(() => props.show, (val) => {
   if (!val) return
   errors.value = {}
+  dateMode.value = 'calendar'
+  duration.value = 7
 
   if (props.editingPlan) {
     const p = props.editingPlan
@@ -178,8 +259,11 @@ watch(() => props.show, (val) => {
       items: t.items.map(i => ({ ...i }))
     }))
   } else {
-    form.value = { name: '', bookTitle: '', startDate: '', endDate: '', color: COLORS[0], isActive: true }
+    // Adding a new plan: default to duration mode with today as start date
+    const today = new Date().toISOString().slice(0, 10)
+    form.value = { name: '', bookTitle: '', startDate: today, endDate: addDays(today, duration.value - 1), color: COLORS[0], isActive: true }
     localTemplates.value = [freshTemplate()]
+    dateMode.value = 'duration'
   }
 })
 
@@ -342,6 +426,87 @@ function handleSubmit() {
 
 .input:focus { border-color: var(--sakura); }
 .input.error { border-color: var(--sakura); }
+
+/* Date mode toggle */
+.date-mode-toggle {
+  display: flex;
+  gap: 4px;
+  background: rgba(26,31,26,0.05);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  background: transparent;
+  border-radius: calc(var(--radius-sm) - 3px);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(26,31,26,0.55);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mode-btn.active {
+  background: white;
+  color: var(--sakura);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Duration slider */
+.duration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.duration-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--sakura);
+}
+
+.duration-slider {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(26,31,26,0.12);
+  border-radius: 3px;
+  outline: none;
+  margin: 8px 0 6px;
+}
+
+.duration-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sakura);
+  border: 3px solid white;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.duration-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sakura);
+  border: 3px solid white;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.duration-end {
+  font-size: 0.75rem;
+  color: rgba(26,31,26,0.5);
+  font-family: var(--font-mono);
+}
 
 .error-msg {
   font-size: 0.75rem;

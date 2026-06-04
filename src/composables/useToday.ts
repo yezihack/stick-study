@@ -31,7 +31,7 @@ export function useToday() {
   async function calcStreak(): Promise<number> {
     const today = todayStr()
     let count = 0
-    let cursor = new Date(today)
+    const cursor = new Date(today)
 
     // Walk backwards day by day
     for (let i = 0; i < 365; i++) {
@@ -87,6 +87,37 @@ export function useToday() {
     return logs
   }
 
+  // ── Reconcile existing log with current templates ─────────
+  // Keeps template tasks scheduled for today (preserving completion state),
+  // drops template tasks no longer scheduled, and keeps temp tasks.
+  function reconcileTasks(existing: TaskLog[], generated: TaskLog[]): TaskLog[] {
+    const existingById = new Map(existing.map(t => [t.taskItemId, t]))
+    const result: TaskLog[] = []
+
+    for (const gen of generated) {
+      const prev = existingById.get(gen.taskItemId)
+      result.push(
+        prev
+          ? { ...gen, completed: prev.completed, completedTime: prev.completedTime }
+          : gen
+      )
+    }
+
+    // Preserve user-added temporary tasks
+    for (const t of existing) {
+      if (t.isTemp) result.push(t)
+    }
+
+    return result
+  }
+
+  // Whether the set of tasks changed (added/removed), ignoring completion state
+  function tasksChanged(a: TaskLog[], b: TaskLog[]): boolean {
+    if (a.length !== b.length) return true
+    const ids = new Set(a.map(t => t.taskItemId))
+    return b.some(t => !ids.has(t.taskItemId))
+  }
+
   // ── Init / load ──────────────────────────────────────────
   async function load() {
     loading.value = true
@@ -119,6 +150,20 @@ export function useToday() {
       }
       await db.dailyLogs.add(newLog)
       log = newLog
+    } else {
+      // Log already exists — reconcile with current templates so newly
+      // created/edited plans show up, while keeping completion + temp tasks.
+      const generatedTasks = buildTasksFromTemplates(activePlans.value, templates.value)
+      const reconciled = reconcileTasks(log.tasks, generatedTasks)
+
+      if (tasksChanged(log.tasks, reconciled)) {
+        const allDone =
+          reconciled.length > 0 && reconciled.every(t => t.completed)
+        const completedAt = allDone ? log.completedAt ?? new Date().toISOString() : null
+        const changes = { tasks: reconciled, completedAt }
+        await db.dailyLogs.update(log.id, changes)
+        log = { ...log, ...changes }
+      }
     }
 
     dailyLog.value = log
@@ -130,24 +175,25 @@ export function useToday() {
   async function toggleTask(taskItemId: string) {
     if (!dailyLog.value) return
 
-    const tasks = dailyLog.value.tasks.map(t => {
-      if (t.taskItemId !== taskItemId) return t
-      return {
-        ...t,
-        completed: !t.completed,
-        completedTime: !t.completed ? new Date().toISOString() : null
-      }
-    })
+    // Spread every element into a plain object — reactive proxies cannot be
+    // structured-cloned into IndexedDB and would make the write throw.
+    const tasks: TaskLog[] = dailyLog.value.tasks.map(t =>
+      t.taskItemId === taskItemId
+        ? {
+            ...t,
+            completed: !t.completed,
+            completedTime: !t.completed ? new Date().toISOString() : null
+          }
+        : { ...t }
+    )
 
-    const allDone = tasks.every(t => t.completed)
+    const allDone = tasks.length > 0 && tasks.every(t => t.completed)
     const completedAt = allDone ? new Date().toISOString() : null
-
-    // Optimistic update
-    dailyLog.value = { ...dailyLog.value, tasks, completedAt }
 
     await db.dailyLogs.update(dailyLog.value.id, { tasks, completedAt })
 
-    if (allDone) streak.value = await calcStreak()
+    dailyLog.value = { ...dailyLog.value, tasks, completedAt }
+    streak.value = await calcStreak()
   }
 
   // ── Add temporary task ────────────────────────────────────
@@ -162,7 +208,8 @@ export function useToday() {
       completedTime: null
     }
 
-    const tasks = [...dailyLog.value.tasks, tempTask]
+    // Plain copies of existing tasks (strip reactive proxies before persisting)
+    const tasks: TaskLog[] = [...dailyLog.value.tasks.map(t => ({ ...t })), tempTask]
     dailyLog.value = { ...dailyLog.value, tasks }
     await db.dailyLogs.update(dailyLog.value.id, { tasks })
   }

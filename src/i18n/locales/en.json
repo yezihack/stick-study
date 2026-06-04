@@ -83,6 +83,10 @@
       "bookTitlePlaceholder": "e.g. Shin Kanzen Master Grammar",
       "startDate": "Start date",
       "endDate": "End date",
+      "dateModeCalendar": "Dates",
+      "dateModeDuration": "Duration",
+      "duration": "Study duration",
+      "durationValue": "{days} days",
       "color": "Color",
       "templates": "Daily task templates",
       "addTemplate": "+ Add template",
@@ -125,6 +129,14 @@
     "deleteDataSub": "This cannot be undone",
     "deleteConfirm": "Clear all data? This cannot be undone.",
     "storageSize": "Storage used",
+    "reminderSub": "Daily check-in reminder",
+    "toast": {
+      "exportSuccess": "Data exported",
+      "importSuccess": "Data imported",
+      "clearSuccess": "Data cleared",
+      "reminderSet": "Reminder set",
+      "permissionDenied": "Notification permission denied"
+    },
     "version": "Version",
     "slogan": "Consistency is the best study method"
   },
