@@ -61,10 +61,14 @@ const { t } = useI18n()
 
 /* Slide-down enter / fade-up leave */
 .banner-enter-active {
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+  transition:
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease;
 }
 .banner-leave-active {
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
 }
 .banner-enter-from {
   transform: translateY(-100%);

@@ -27,3 +27,10 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+TODO.md
+.vscode
+
+# Android signing (keep secrets out of git)
+*.keystore
+*.jks
+android/keystore.properties

@@ -8,7 +8,8 @@
     <div class="month-nav">
       <button class="nav-btn" :aria-label="'prev'" @click="prevMonth">‹</button>
       <span class="month-label">
-        {{ monthLabel.year }}<span class="month-sep">年</span>{{ monthLabel.month }}<span class="month-sep">月</span>
+        {{ monthLabel.year }}<span class="month-sep">年</span>{{ monthLabel.month
+        }}<span class="month-sep">月</span>
       </span>
       <button class="nav-btn" :aria-label="'next'" @click="nextMonth">›</button>
     </div>
@@ -34,6 +35,22 @@
       </div>
     </div>
 
+    <!-- Completion-rate stats (today / yesterday / last week) -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <span class="stat-value">{{ fmtRate(periodStats.today) }}</span>
+        <span class="stat-label">{{ t('calendar.statsTodayRate') }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ fmtRate(periodStats.yesterday) }}</span>
+        <span class="stat-label">{{ t('calendar.statsYesterdayRate') }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ fmtRate(periodStats.lastWeek) }}</span>
+        <span class="stat-label">{{ t('calendar.statsLastWeekRate') }}</span>
+      </div>
+    </div>
+
     <!-- Legend -->
     <div class="legend">
       <span class="legend-item">
@@ -52,12 +69,7 @@
       <h2 class="section-title">{{ t('calendar.recentTitle') }}</h2>
       <p v-if="recentLogs.length === 0" class="no-recent">{{ t('calendar.noRecent') }}</p>
       <ul v-else class="recent-list">
-        <li
-          v-for="log in recentLogs"
-          :key="log.id"
-          class="recent-row"
-          @click="selectDay(log.date)"
-        >
+        <li v-for="log in recentLogs" :key="log.id" class="recent-row" @click="selectDay(log.date)">
           <span class="recent-date">{{ formatDate(log.date) }}</span>
           <span class="recent-count">
             {{ log.tasks.filter(t => t.completed).length }} / {{ log.tasks.length }}
@@ -94,6 +106,7 @@ const {
   calendarDays,
   monthStats,
   streak,
+  periodStats,
   recentLogs,
   selectedDate,
   selectedLog,
@@ -105,6 +118,11 @@ const {
 } = useCalendar()
 
 const templates = ref<TaskTemplate[]>([])
+
+// Render a completion rate; "—" when no tasks existed in that period.
+function fmtRate(rate: number | null): string {
+  return rate === null ? '—' : `${rate}%`
+}
 
 function formatDate(dateStr: string): string {
   const [y, m, d] = dateStr.split('-').map(Number)
@@ -150,8 +168,8 @@ onMounted(async () => {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1.5px solid rgba(26,31,26,0.15);
-  background: white;
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
+  background: var(--surface);
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
@@ -180,7 +198,7 @@ onMounted(async () => {
 
 /* Grid card */
 .grid-card {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 12px;
   margin-bottom: 1rem;
@@ -196,7 +214,7 @@ onMounted(async () => {
 }
 
 .stat-card {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 12px 8px;
   text-align: center;
@@ -215,7 +233,7 @@ onMounted(async () => {
 
 .stat-label {
   font-size: 0.68rem;
-  color: rgba(26,31,26,0.5);
+  color: rgba(var(--ink-rgb), 0.5);
 }
 
 /* Legend */
@@ -231,7 +249,7 @@ onMounted(async () => {
   align-items: center;
   gap: 5px;
   font-size: 0.72rem;
-  color: rgba(26,31,26,0.6);
+  color: rgba(var(--ink-rgb), 0.6);
 }
 
 .legend-dot {
@@ -240,12 +258,20 @@ onMounted(async () => {
   border-radius: 50%;
 }
 
-.legend-dot.done { background: var(--moss); }
-.legend-dot.partial { background: var(--gold); }
-.legend-dot.none { background: rgba(26,31,26,0.12); }
+.legend-dot.done {
+  background: var(--moss);
+}
+.legend-dot.partial {
+  background: var(--gold);
+}
+.legend-dot.none {
+  background: rgba(var(--ink-rgb), 0.12);
+}
 
 /* Recent */
-.recent-section { margin-top: 0.5rem; }
+.recent-section {
+  margin-top: 0.5rem;
+}
 
 .section-title {
   font-size: 0.75rem;
@@ -258,7 +284,7 @@ onMounted(async () => {
 
 .no-recent {
   font-size: 0.85rem;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   text-align: center;
   padding: 1rem 0;
 }
@@ -275,7 +301,7 @@ onMounted(async () => {
 .recent-row {
   display: flex;
   align-items: center;
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   cursor: pointer;
@@ -283,7 +309,9 @@ onMounted(async () => {
   transition: opacity 0.15s;
 }
 
-.recent-row:active { opacity: 0.7; }
+.recent-row:active {
+  opacity: 0.7;
+}
 
 .recent-date {
   flex: 1;
@@ -294,12 +322,12 @@ onMounted(async () => {
 .recent-count {
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  color: rgba(26,31,26,0.5);
+  color: rgba(var(--ink-rgb), 0.5);
   margin-right: 8px;
 }
 
 .recent-arrow {
-  color: rgba(26,31,26,0.3);
+  color: rgba(var(--ink-rgb), 0.3);
   font-size: 0.9rem;
 }
 </style>

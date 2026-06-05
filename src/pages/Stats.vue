@@ -24,11 +24,17 @@
       <div class="hero-row">
         <div class="hero-card">
           <span class="hero-value">{{ totalTasks }}</span>
-          <span class="hero-label">{{ t('stats.totalTasks') }}{{ locale === 'zh-CN' || locale === 'ja' ? t('stats.tasksUnit') : '' }}</span>
+          <span class="hero-label"
+            >{{ t('stats.totalTasks')
+            }}{{ locale === 'zh-CN' || locale === 'ja' ? t('stats.tasksUnit') : '' }}</span
+          >
         </div>
         <div class="hero-card">
           <span class="hero-value">{{ totalDays }}</span>
-          <span class="hero-label">{{ t('stats.totalDays') }}{{ locale === 'zh-CN' || locale === 'ja' ? t('stats.daysUnit') : '' }}</span>
+          <span class="hero-label"
+            >{{ t('stats.totalDays')
+            }}{{ locale === 'zh-CN' || locale === 'ja' ? t('stats.daysUnit') : '' }}</span
+          >
         </div>
       </div>
 
@@ -43,11 +49,7 @@
         <p class="card-title">{{ t('stats.typeBreakdown') }}</p>
         <div v-if="richTypeStats.length === 0" class="no-data">{{ t('stats.noData') }}</div>
         <div v-else class="type-list">
-          <TypeProgressBar
-            v-for="stat in richTypeStats"
-            :key="stat.type"
-            :stat="stat"
-          />
+          <TypeProgressBar v-for="stat in richTypeStats" :key="stat.type" :stat="stat" />
         </div>
       </div>
     </template>
@@ -64,22 +66,10 @@ import type { RangeKey } from '@/composables/useStats'
 
 const { t, locale } = useI18n()
 
-const {
-  range,
-  loading,
-  totalTasks,
-  totalDays,
-  weekData,
-  richTypeStats,
-  setRange,
-  load
-} = useStats()
+const { range, loading, totalTasks, totalDays, weekData, richTypeStats, setRange, load } =
+  useStats()
 
-const ranges: { key: RangeKey }[] = [
-  { key: 'week' },
-  { key: 'month' },
-  { key: 'all' }
-]
+const ranges: { key: RangeKey }[] = [{ key: 'week' }, { key: 'month' }, { key: 'all' }]
 
 onMounted(() => load())
 </script>
@@ -92,7 +82,9 @@ onMounted(() => load())
   margin: 0 auto;
 }
 
-.stats-header { margin-bottom: 1rem; }
+.stats-header {
+  margin-bottom: 1rem;
+}
 
 .page-title {
   font-size: 1.4rem;
@@ -103,7 +95,7 @@ onMounted(() => load())
 .loading {
   text-align: center;
   padding: 3rem 0;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   font-size: 0.9rem;
 }
 
@@ -117,11 +109,11 @@ onMounted(() => load())
 .range-btn {
   flex: 1;
   padding: 7px 0;
-  border: 1.5px solid rgba(26,31,26,0.15);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
   border-radius: 20px;
   background: transparent;
   font-size: 0.82rem;
-  color: rgba(26,31,26,0.6);
+  color: rgba(var(--ink-rgb), 0.6);
   cursor: pointer;
   transition: all 0.15s;
 }
@@ -141,7 +133,7 @@ onMounted(() => load())
 }
 
 .hero-card {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 1.2rem 1rem;
   display: flex;
@@ -160,13 +152,13 @@ onMounted(() => load())
 
 .hero-label {
   font-size: 0.78rem;
-  color: rgba(26,31,26,0.5);
+  color: rgba(var(--ink-rgb), 0.5);
 }
 
 /* Chart + breakdown cards */
 .chart-card,
 .breakdown-card {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 1rem;
@@ -186,7 +178,7 @@ onMounted(() => load())
   text-align: center;
   padding: 1rem 0;
   font-size: 0.85rem;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
 }
 
 .type-list {

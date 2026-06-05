@@ -8,9 +8,7 @@
         <p class="today-greeting">{{ greeting }}</p>
         <p class="today-date">{{ formattedDate }}</p>
       </div>
-      <div v-if="streak > 0" class="streak-badge">
-        🔥 {{ t('today.streak', { days: streak }) }}
-      </div>
+      <div v-if="streak > 0" class="streak-badge">🔥 {{ t('today.streak', { days: streak }) }}</div>
     </header>
 
     <!-- Loading -->
@@ -24,9 +22,7 @@
         <p class="empty-icon">📚</p>
         <p class="empty-title">{{ t('today.noPlan') }}</p>
         <p class="empty-sub">{{ t('today.noPlanSub') }}</p>
-        <button class="go-plans-btn" @click="router.push('/plans')">
-          {{ t('nav.plans') }} →
-        </button>
+        <button class="go-plans-btn" @click="router.push('/plans')">{{ t('nav.plans') }} →</button>
       </div>
 
       <template v-else>
@@ -41,6 +37,7 @@
             <TaskCard
               :task="task"
               :item="getTaskItem(task.taskItemId)"
+              :plan="getTaskPlan(task.taskItemId)"
               @toggle="handleToggle"
             />
           </li>
@@ -72,7 +69,13 @@
                 <button class="btn-confirm" @click="submitTempTask">
                   {{ t('today.addTaskConfirm') }}
                 </button>
-                <button class="btn-cancel" @click="showAddTask = false; tempTaskInput = ''">
+                <button
+                  class="btn-cancel"
+                  @click="
+                    showAddTask = false;
+                    tempTaskInput = '';
+                  "
+                >
                   {{ t('today.addTaskCancel') }}
                 </button>
               </div>
@@ -98,13 +101,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import TaskCard from '@/components/TaskCard.vue'
 import ProgressBar from '@/components/ProgressBar.vue'
 import CompleteBanner from '@/components/CompleteBanner.vue'
 import { useToday } from '@/composables/useToday'
+import { todayStr } from '@/utils/date'
 
 const router = useRouter()
 const { t, locale } = useI18n()
@@ -122,7 +126,8 @@ const {
   toggleTask,
   addTempTask,
   saveNote,
-  getTaskItem
+  getTaskItem,
+  getTaskPlan
 } = useToday()
 
 // ── UI state ────────────────────────────────────────────────
@@ -153,22 +158,32 @@ const formattedDate = computed(() => {
   return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 })
 
-// ── Watch all-done → show banner ─────────────────────────────
-watch(isAllDone, val => {
-  if (!val) return
+// ── Show completion banner ───────────────────────────────────
+// Triggered only by a user toggle that completes the last task — not on
+// load/remount, so revisiting the page won't re-pop an already-earned banner.
+function triggerBanner() {
   if (bannerTimer) clearTimeout(bannerTimer)
   showBanner.value = true
-  bannerTimer = setTimeout(() => { showBanner.value = false }, 4000)
-})
+  bannerTimer = setTimeout(() => {
+    showBanner.value = false
+  }, 4000)
+}
 
 // ── Sync note textarea with loaded data ──────────────────────
-watch(dailyLog, log => {
-  if (log) noteText.value = log.note
-}, { immediate: true })
+watch(
+  dailyLog,
+  log => {
+    if (log) noteText.value = log.note
+  },
+  { immediate: true }
+)
 
 // ── Handlers ────────────────────────────────────────────────
 async function handleToggle(taskItemId: string) {
+  const wasAllDone = isAllDone.value
   await toggleTask(taskItemId)
+  // Only celebrate on the transition from not-done → all-done.
+  if (!wasAllDone && isAllDone.value) triggerBanner()
 }
 
 async function submitTempTask() {
@@ -183,7 +198,30 @@ async function handleSaveNote() {
 }
 
 // ── Init ─────────────────────────────────────────────────────
-onMounted(() => load())
+// Track the day the page was loaded for, so we can refresh when the app
+// resumes on a new local day (webviews resume rather than remount).
+let loadedDay = todayStr()
+
+async function reloadForToday() {
+  loadedDay = todayStr()
+  await load()
+}
+
+function handleVisibility() {
+  if (document.visibilityState === 'visible' && todayStr() !== loadedDay) {
+    reloadForToday()
+  }
+}
+
+onMounted(() => {
+  reloadForToday()
+  document.addEventListener('visibilitychange', handleVisibility)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', handleVisibility)
+  if (bannerTimer) clearTimeout(bannerTimer)
+})
 </script>
 
 <style scoped>
@@ -204,7 +242,7 @@ onMounted(() => load())
 
 .today-greeting {
   font-size: 0.85rem;
-  color: rgba(26, 31, 26, 0.55);
+  color: rgba(var(--ink-rgb), 0.55);
   margin: 0 0 2px;
 }
 
@@ -230,7 +268,7 @@ onMounted(() => load())
 .loading-state {
   text-align: center;
   padding: 3rem 0;
-  color: rgba(26, 31, 26, 0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   font-size: 0.9rem;
 }
 
@@ -254,7 +292,7 @@ onMounted(() => load())
 
 .empty-sub {
   font-size: 0.85rem;
-  color: rgba(26, 31, 26, 0.5);
+  color: rgba(var(--ink-rgb), 0.5);
   margin: 0 0 1.25rem;
 }
 
@@ -286,7 +324,7 @@ onMounted(() => load())
 .tasks-empty {
   text-align: center;
   padding: 1.5rem;
-  color: rgba(26, 31, 26, 0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   font-size: 0.85rem;
 }
 
@@ -298,10 +336,10 @@ onMounted(() => load())
 .add-task-btn {
   width: 100%;
   padding: 12px;
-  border: 1.5px dashed rgba(26, 31, 26, 0.2);
+  border: 1.5px dashed rgba(var(--ink-rgb), 0.2);
   border-radius: var(--radius-md);
   background: transparent;
-  color: rgba(26, 31, 26, 0.5);
+  color: rgba(var(--ink-rgb), 0.5);
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.15s;
@@ -326,7 +364,7 @@ onMounted(() => load())
   font-size: 0.9rem;
   font-family: var(--font-sans);
   color: var(--ink);
-  background: white;
+  background: var(--surface);
   outline: none;
 }
 
@@ -350,8 +388,8 @@ onMounted(() => load())
   flex: 1;
   padding: 9px;
   background: transparent;
-  color: rgba(26, 31, 26, 0.55);
-  border: 1.5px solid rgba(26, 31, 26, 0.15);
+  color: rgba(var(--ink-rgb), 0.55);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
   cursor: pointer;
@@ -366,19 +404,19 @@ onMounted(() => load())
 
 .note-label {
   font-size: 0.8rem;
-  color: rgba(26, 31, 26, 0.55);
+  color: rgba(var(--ink-rgb), 0.55);
   font-weight: 500;
 }
 
 .note-textarea {
   width: 100%;
   padding: 12px 14px;
-  border: 1.5px solid rgba(26, 31, 26, 0.12);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.12);
   border-radius: var(--radius-md);
   font-size: 0.88rem;
   font-family: var(--font-sans);
   color: var(--ink);
-  background: white;
+  background: var(--surface);
   resize: vertical;
   outline: none;
   line-height: 1.6;

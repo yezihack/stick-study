@@ -1,17 +1,9 @@
 <template>
   <div class="bar-chart" aria-hidden="true">
-    <div
-      v-for="day in days"
-      :key="day.date"
-      class="bar-col"
-      :class="{ today: day.isToday }"
-    >
+    <div v-for="day in days" :key="day.date" class="bar-col" :class="{ today: day.isToday }">
       <span class="bar-value">{{ day.count > 0 ? day.count : '' }}</span>
       <div class="bar-track">
-        <div
-          class="bar-fill"
-          :style="{ height: barHeight(day.count) + '%' }"
-        />
+        <div class="bar-fill" :style="{ height: barHeight(day.count) + '%' }" />
       </div>
       <span class="bar-label">{{ weekdayLabel(day.weekday) }}</span>
     </div>
@@ -65,7 +57,7 @@ function weekdayLabel(weekday: number): string {
 .bar-value {
   font-family: var(--font-mono);
   font-size: 0.65rem;
-  color: rgba(26,31,26,0.5);
+  color: rgba(var(--ink-rgb), 0.5);
   height: 14px;
   line-height: 14px;
 }
@@ -73,7 +65,7 @@ function weekdayLabel(weekday: number): string {
 .bar-track {
   flex: 1;
   width: 100%;
-  background: rgba(26,31,26,0.07);
+  background: rgba(var(--ink-rgb), 0.07);
   border-radius: 4px 4px 2px 2px;
   display: flex;
   align-items: flex-end;
@@ -94,7 +86,7 @@ function weekdayLabel(weekday: number): string {
 
 .bar-label {
   font-size: 0.65rem;
-  color: rgba(26,31,26,0.5);
+  color: rgba(var(--ink-rgb), 0.5);
   white-space: nowrap;
 }
 

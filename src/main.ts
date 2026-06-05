@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import i18n, { loadLocaleFromDB } from './i18n'
 import { initializeDatabase, getConfig } from './db'
+import { applyTheme } from './utils/theme'
 
 const app = createApp(App)
 
@@ -13,9 +14,7 @@ app.use(i18n)
 async function applySavedTheme() {
   try {
     const config = await getConfig()
-    if (config?.darkMode) {
-      document.documentElement.classList.add('dark')
-    }
+    await applyTheme(Boolean(config?.darkMode))
   } catch (error) {
     console.error('Failed to apply saved theme:', error)
   }

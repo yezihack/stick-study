@@ -34,6 +34,9 @@
     "statsStreak": "連続日数",
     "statsMonthDone": "今月の完了",
     "statsMonthRate": "達成率",
+    "statsTodayRate": "今日の達成率",
+    "statsYesterdayRate": "昨日の達成率",
+    "statsLastWeekRate": "先週の達成率",
     "recentTitle": "最近の記録",
     "noRecent": "まだ記録がありません",
     "dayDetail": {

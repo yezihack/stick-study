@@ -56,7 +56,7 @@ const icons: Record<string, string> = {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid rgba(26, 31, 26, 0.1);
+  border-top: 1px solid rgba(var(--ink-rgb), 0.1);
   z-index: 100;
 }
 
@@ -66,7 +66,7 @@ const icons: Record<string, string> = {
   align-items: center;
   gap: 4px;
   text-decoration: none;
-  color: rgba(26, 31, 26, 0.6);
+  color: rgba(var(--ink-rgb), 0.6);
   transition: color 0.2s;
   padding: 8px 12px;
   min-width: 64px;

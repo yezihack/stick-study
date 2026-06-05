@@ -1,10 +1,7 @@
 import { ref, computed } from 'vue'
 import { db } from '@/db'
 import type { Plan } from '@/db/models'
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10)
-}
+import { todayStr } from '@/utils/date'
 
 function daysLeft(endDate: string): number {
   const today = new Date(todayStr())

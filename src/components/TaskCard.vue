@@ -4,14 +4,23 @@
     :class="{ completed: task.completed }"
     @click="$emit('toggle', task.taskItemId)"
   >
+    <!-- Plan name watermark (background layer, 30% opacity) -->
+    <span v-if="plan" class="plan-watermark" aria-hidden="true">{{ plan.name }}</span>
+
     <!-- Checkbox -->
     <span class="check-circle" aria-hidden="true">
       <svg v-if="task.completed" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="7.5" stroke="currentColor"/>
-        <path d="M4.5 8l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
+        <path
+          d="M4.5 8l2.5 2.5 4.5-4.5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
       <svg v-else viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="7.5" stroke="currentColor"/>
+        <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
       </svg>
     </span>
 
@@ -40,11 +49,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { TaskLog, TaskItem } from '@/db/models'
+import type { TaskLog, TaskItem, Plan } from '@/db/models'
 
 const props = defineProps<{
   task: TaskLog
   item: TaskItem | null
+  plan?: Plan | null
 }>()
 
 defineEmits<{ toggle: [taskItemId: string] }>()
@@ -73,13 +83,39 @@ const typeColor = computed(() => {
   gap: 12px;
   width: 100%;
   padding: 14px 16px;
-  background: white;
-  border: 1.5px solid rgba(26, 31, 26, 0.08);
+  background: var(--surface);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.08);
   border-radius: var(--radius-md);
   cursor: pointer;
   text-align: left;
   transition: all 0.18s ease;
   box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Plan name watermark — sits behind the task content at 30% opacity */
+.plan-watermark {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  max-width: 70%;
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  opacity: 0.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.check-circle,
+.card-body {
+  position: relative;
+  z-index: 1;
 }
 
 .task-card:active {
@@ -88,7 +124,7 @@ const typeColor = computed(() => {
 
 .task-card.completed {
   opacity: 0.55;
-  background: rgba(26, 31, 26, 0.03);
+  background: rgba(var(--ink-rgb), 0.03);
 }
 
 .check-circle {
@@ -145,11 +181,11 @@ const typeColor = computed(() => {
 
 .task-card.completed .card-title {
   text-decoration: line-through;
-  color: rgba(26, 31, 26, 0.4);
+  color: rgba(var(--ink-rgb), 0.4);
 }
 
 .card-desc {
-  color: rgba(26, 31, 26, 0.5);
+  color: rgba(var(--ink-rgb), 0.5);
   font-size: 0.85rem;
 }
 </style>

@@ -65,7 +65,19 @@
           <span class="action-sub">{{ t('settings.exportSub') }}</span>
         </div>
         <button class="action-btn" :aria-label="t('settings.export')" @click="handleExport">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v11"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 3v11" />
+            <path d="M8 11l4 4 4-4" />
+            <path d="M5 19h14" />
+          </svg>
         </button>
       </div>
 
@@ -75,7 +87,19 @@
           <span class="action-sub">{{ t('settings.importSub') }}</span>
         </div>
         <button class="action-btn" :aria-label="t('settings.import')" @click="handleImport">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 16V5"/><path d="M8 9l4-4 4 4"/><path d="M5 19h14"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 16V5" />
+            <path d="M8 9l4-4 4 4" />
+            <path d="M5 19h14" />
+          </svg>
         </button>
       </div>
 
@@ -84,8 +108,26 @@
           <span class="action-label">{{ t('settings.deleteData') }}</span>
           <span class="action-sub">{{ t('settings.deleteDataSub') }}</span>
         </div>
-        <button class="action-btn danger" :aria-label="t('settings.deleteData')" @click="showDeleteConfirm = true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M6 7l1 13h10l1-13"/><line x1="10" y1="11" x2="10" y2="16"/><line x1="14" y1="11" x2="14" y2="16"/></svg>
+        <button
+          class="action-btn danger"
+          :aria-label="t('settings.deleteData')"
+          @click="showDeleteConfirm = true"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M4 7h16" />
+            <path d="M9 7V5h6v2" />
+            <path d="M6 7l1 13h10l1-13" />
+            <line x1="10" y1="11" x2="10" y2="16" />
+            <line x1="14" y1="11" x2="14" y2="16" />
+          </svg>
         </button>
       </div>
 
@@ -98,6 +140,7 @@
     <!-- About -->
     <section class="settings-section about">
       <h2 class="section-title">{{ t('settings.section.about') }}</h2>
+      <img class="about-logo" src="/logo.svg" alt="" width="72" height="72" />
       <p class="version">{{ t('settings.version') }} 1.0.0</p>
       <p class="slogan">{{ t('settings.slogan') }}</p>
     </section>
@@ -116,7 +159,9 @@
           <p class="confirm-text">{{ t('settings.deleteConfirm') }}</p>
           <div class="confirm-actions">
             <button class="btn-delete" @click="handleClearData">{{ t('common.delete') }}</button>
-            <button class="btn-cancel" @click="showDeleteConfirm = false">{{ t('common.cancel') }}</button>
+            <button class="btn-cancel" @click="showDeleteConfirm = false">
+              {{ t('common.cancel') }}
+            </button>
           </div>
         </div>
       </div>
@@ -125,10 +170,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { getConfig, updateConfig } from '@/db'
-import { exportData, importData, clearAllData, estimateStorageSize } from '@/composables/useDataManagement'
+import { applyTheme } from '@/utils/theme'
+import {
+  exportData,
+  importData,
+  clearAllData,
+  estimateStorageSize
+} from '@/composables/useDataManagement'
 import {
   scheduleDailyReminder,
   cancelDailyReminder,
@@ -157,7 +208,7 @@ onMounted(async () => {
   const config = await getConfig()
   if (config) {
     darkMode.value = config.darkMode
-    applyDarkMode(config.darkMode)
+    applyTheme(config.darkMode)
     reminderEnabled.value = config.reminderEnabled
     reminderTime.value = config.reminderTime || '09:00'
   }
@@ -175,22 +226,11 @@ async function changeLanguage(lang: 'zh-CN' | 'en' | 'ja') {
 }
 
 // ── Dark mode ────────────────────────────────────────────────
-function applyDarkMode(dark: boolean) {
-  if (dark) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-}
-
 async function toggleDarkMode() {
   darkMode.value = !darkMode.value
-  applyDarkMode(darkMode.value)
+  await applyTheme(darkMode.value)
   await updateConfig({ darkMode: darkMode.value })
 }
-
-// Watch dark mode changes
-watch(darkMode, val => applyDarkMode(val))
 
 // ── Reminder ─────────────────────────────────────────────────
 async function applyReminder() {
@@ -271,7 +311,9 @@ async function handleClearData() {
 
 function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   toast.value = { show: true, message: msg, type }
-  setTimeout(() => { toast.value.show = false }, 2500)
+  setTimeout(() => {
+    toast.value.show = false
+  }, 2500)
 }
 </script>
 
@@ -290,15 +332,11 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
 }
 
 .settings-section {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 1rem;
   margin-bottom: 1rem;
   box-shadow: var(--shadow-sm);
-}
-
-:root.dark .settings-section {
-  background: #252a25;
 }
 
 .section-title {
@@ -372,7 +410,7 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: white;
+  background: #fff;
   transition: transform 0.25s;
 }
 
@@ -446,9 +484,13 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   height: 20px;
 }
 
-.action-btn:active { transform: scale(0.9); }
+.action-btn:active {
+  transform: scale(0.9);
+}
 
-.action-row.danger .action-label { color: var(--sakura); }
+.action-row.danger .action-label {
+  color: var(--sakura);
+}
 .action-btn.danger {
   background: rgba(192, 84, 74, 0.1);
   color: var(--sakura);
@@ -481,6 +523,13 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   padding: 1.5rem 1rem;
 }
 
+.about-logo {
+  display: block;
+  margin: 0 auto 0.75rem;
+  width: 72px;
+  height: 72px;
+}
+
 .version {
   font-size: 0.85rem;
   color: rgba(128, 128, 128, 0.5);
@@ -510,18 +559,36 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   box-shadow: var(--shadow-md);
 }
 
-.toast.success { background: var(--moss); color: white; }
-.toast.error { background: var(--sakura); color: white; }
+.toast.success {
+  background: var(--moss);
+  color: white;
+}
+.toast.error {
+  background: var(--sakura);
+  color: white;
+}
 
-.toast-enter-active { transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1), opacity 0.2s; }
-.toast-leave-active { transition: transform 0.2s, opacity 0.2s; }
-.toast-enter-from, .toast-leave-to { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+.toast-enter-active {
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity 0.2s;
+}
+.toast-leave-active {
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
+}
+.toast-enter-from,
+.toast-leave-to {
+  transform: translateX(-50%) translateY(-20px);
+  opacity: 0;
+}
 
 /* Confirm dialog */
 .confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -530,16 +597,12 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
 }
 
 .confirm-dialog {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   max-width: 320px;
   width: 100%;
   box-shadow: var(--shadow-md);
-}
-
-:root.dark .confirm-dialog {
-  background: #252a25;
 }
 
 .confirm-text {
@@ -576,6 +639,12 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   color: var(--ink);
 }
 
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

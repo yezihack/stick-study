@@ -51,7 +51,10 @@ export function importData(): Promise<void> {
 
     input.onchange = async () => {
       const file = input.files?.[0]
-      if (!file) { resolve(); return }
+      if (!file) {
+        resolve()
+        return
+      }
 
       try {
         const text = await file.text()
@@ -63,17 +66,23 @@ export function importData(): Promise<void> {
         }
 
         // Overwrite strategy: clear then insert
-        await db.transaction('rw', [db.plans, db.taskTemplates, db.dailyLogs, db.config], async () => {
-          await db.plans.clear()
-          await db.taskTemplates.clear()
-          await db.dailyLogs.clear()
-          await db.config.clear()
+        await db.transaction(
+          'rw',
+          [db.plans, db.taskTemplates, db.dailyLogs, db.config],
+          async () => {
+            await db.plans.clear()
+            await db.taskTemplates.clear()
+            await db.dailyLogs.clear()
+            await db.config.clear()
 
-          if (payload.data.plans.length) await db.plans.bulkAdd(payload.data.plans as never)
-          if (payload.data.taskTemplates.length) await db.taskTemplates.bulkAdd(payload.data.taskTemplates as never)
-          if (payload.data.dailyLogs.length) await db.dailyLogs.bulkAdd(payload.data.dailyLogs as never)
-          if (payload.data.config) await db.config.add(payload.data.config as never)
-        })
+            if (payload.data.plans.length) await db.plans.bulkAdd(payload.data.plans as never)
+            if (payload.data.taskTemplates.length)
+              await db.taskTemplates.bulkAdd(payload.data.taskTemplates as never)
+            if (payload.data.dailyLogs.length)
+              await db.dailyLogs.bulkAdd(payload.data.dailyLogs as never)
+            if (payload.data.config) await db.config.add(payload.data.config as never)
+          }
+        )
 
         resolve()
       } catch (err) {

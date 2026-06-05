@@ -34,6 +34,9 @@
     "statsStreak": "Streak",
     "statsMonthDone": "This month",
     "statsMonthRate": "Completion",
+    "statsTodayRate": "Today",
+    "statsYesterdayRate": "Yesterday",
+    "statsLastWeekRate": "Last week",
     "recentTitle": "Recent",
     "noRecent": "No check-ins yet",
     "dayDetail": {

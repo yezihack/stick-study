@@ -42,12 +42,12 @@ export async function scheduleDailyReminder(config: AppConfig, message: string):
 
     // Parse reminder time (HH:mm)
     const [hours, minutes] = config.reminderTime.split(':').map(Number)
-    
+
     // Calculate next reminder time
     const now = new Date()
     const scheduledTime = new Date()
     scheduledTime.setHours(hours, minutes, 0, 0)
-    
+
     // If time has passed today, schedule for tomorrow
     if (scheduledTime <= now) {
       scheduledTime.setDate(scheduledTime.getDate() + 1)
@@ -91,8 +91,8 @@ export async function cancelDailyReminder(): Promise<void> {
 export function getLocalizedReminderMessage(language: string): string {
   const messages: Record<string, string> = {
     'zh-CN': '今日还未打卡，坚持学习吧！',
-    'en': 'Don\'t forget your daily check-in!',
-    'ja': '今日の打刻を忘れずに！'
+    en: "Don't forget your daily check-in!",
+    ja: '今日の打刻を忘れずに！'
   }
   return messages[language] || messages['zh-CN']
 }

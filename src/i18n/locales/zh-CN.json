@@ -34,6 +34,9 @@
     "statsStreak": "连续天数",
     "statsMonthDone": "本月完成",
     "statsMonthRate": "本月达成率",
+    "statsTodayRate": "今日完成率",
+    "statsYesterdayRate": "昨天完成率",
+    "statsLastWeekRate": "上周完成率",
     "recentTitle": "最近记录",
     "noRecent": "暂无打卡记录",
     "dayDetail": {

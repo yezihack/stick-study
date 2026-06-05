@@ -41,7 +41,18 @@
       <!-- Empty state -->
       <div v-if="plans.length === 0" class="empty-state">
         <span class="empty-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z" />
+            <path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z" />
+          </svg>
         </span>
         <p class="empty-title">{{ t('plans.noPlans') }}</p>
         <p class="empty-sub">{{ t('plans.noPlansSub') }}</p>
@@ -65,7 +76,9 @@
           <p>{{ t('plans.form.archiveConfirm') }}</p>
           <div class="confirm-actions">
             <button class="btn-confirm-yes" @click="doArchive">{{ t('common.confirm') }}</button>
-            <button class="btn-confirm-no" @click="confirmArchiveId = null">{{ t('common.cancel') }}</button>
+            <button class="btn-confirm-no" @click="confirmArchiveId = null">
+              {{ t('common.cancel') }}
+            </button>
           </div>
         </div>
       </div>
@@ -229,7 +242,7 @@ onMounted(async () => {
 .loading {
   text-align: center;
   padding: 3rem 0;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   font-size: 0.9rem;
 }
 
@@ -266,11 +279,23 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   margin: 0 0 0.75rem;
-  color: rgba(26,31,26,0.25);
+  color: rgba(var(--ink-rgb), 0.25);
 }
-.empty-icon svg { width: 56px; height: 56px; }
-.empty-title { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin: 0 0 0.25rem; }
-.empty-sub { font-size: 0.85rem; color: rgba(26,31,26,0.5); margin: 0 0 1.25rem; }
+.empty-icon svg {
+  width: 56px;
+  height: 56px;
+}
+.empty-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 0.25rem;
+}
+.empty-sub {
+  font-size: 0.85rem;
+  color: rgba(var(--ink-rgb), 0.5);
+  margin: 0 0 1.25rem;
+}
 
 .cta-btn {
   padding: 10px 24px;
@@ -286,7 +311,7 @@ onMounted(async () => {
 .confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -295,7 +320,7 @@ onMounted(async () => {
 }
 
 .confirm-dialog {
-  background: white;
+  background: var(--surface);
   border-radius: var(--radius-md);
   padding: 1.5rem;
   max-width: 320px;
@@ -330,14 +355,20 @@ onMounted(async () => {
   flex: 1;
   padding: 10px;
   background: transparent;
-  border: 1.5px solid rgba(26,31,26,0.15);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   cursor: pointer;
-  color: rgba(26,31,26,0.6);
+  color: rgba(var(--ink-rgb), 0.6);
 }
 
 /* Fade */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>

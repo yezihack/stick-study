@@ -1,11 +1,7 @@
 import { ref, computed } from 'vue'
 import { db } from '@/db'
 import type { DailyLog, TaskLog, Plan, TaskTemplate } from '@/db/models'
-
-// Format today as "YYYY-MM-DD"
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10)
-}
+import { todayStr } from '@/utils/date'
 
 export function useToday() {
   const dailyLog = ref<DailyLog | null>(null)
@@ -21,9 +17,7 @@ export function useToday() {
   const progressPct = computed(() =>
     totalCount.value === 0 ? 0 : Math.round((doneCount.value / totalCount.value) * 100)
   )
-  const isAllDone = computed(
-    () => totalCount.value > 0 && doneCount.value === totalCount.value
-  )
+  const isAllDone = computed(() => totalCount.value > 0 && doneCount.value === totalCount.value)
 
   // ── Streak ───────────────────────────────────────────────
   const streak = ref(0)
@@ -35,7 +29,7 @@ export function useToday() {
 
     // Walk backwards day by day
     for (let i = 0; i < 365; i++) {
-      const dateStr = cursor.toISOString().slice(0, 10)
+      const dateStr = todayStr(cursor)
       // Skip today itself — it may not be completed yet
       if (dateStr !== today) {
         const log = await db.dailyLogs
@@ -97,9 +91,7 @@ export function useToday() {
     for (const gen of generated) {
       const prev = existingById.get(gen.taskItemId)
       result.push(
-        prev
-          ? { ...gen, completed: prev.completed, completedTime: prev.completedTime }
-          : gen
+        prev ? { ...gen, completed: prev.completed, completedTime: prev.completedTime } : gen
       )
     }
 
@@ -129,9 +121,7 @@ export function useToday() {
     // Load templates for those plans
     const planIds = activePlans.value.map(p => p.id)
     templates.value =
-      planIds.length > 0
-        ? await db.taskTemplates.where('planId').anyOf(planIds).toArray()
-        : []
+      planIds.length > 0 ? await db.taskTemplates.where('planId').anyOf(planIds).toArray() : []
 
     // Find or create today's log
     let log = await db.dailyLogs.where('date').equals(today).first()
@@ -157,9 +147,8 @@ export function useToday() {
       const reconciled = reconcileTasks(log.tasks, generatedTasks)
 
       if (tasksChanged(log.tasks, reconciled)) {
-        const allDone =
-          reconciled.length > 0 && reconciled.every(t => t.completed)
-        const completedAt = allDone ? log.completedAt ?? new Date().toISOString() : null
+        const allDone = reconciled.length > 0 && reconciled.every(t => t.completed)
+        const completedAt = allDone ? (log.completedAt ?? new Date().toISOString()) : null
         const changes = { tasks: reconciled, completedAt }
         await db.dailyLogs.update(log.id, changes)
         log = { ...log, ...changes }
@@ -230,6 +219,16 @@ export function useToday() {
     return null
   }
 
+  // ── Resolve owning plan for a task ────────────────────────
+  function getTaskPlan(taskItemId: string): Plan | null {
+    for (const tpl of templates.value) {
+      if (tpl.items.some(i => i.id === taskItemId)) {
+        return activePlans.value.find(p => p.id === tpl.planId) ?? null
+      }
+    }
+    return null
+  }
+
   return {
     // state
     loading,
@@ -247,6 +246,7 @@ export function useToday() {
     toggleTask,
     addTempTask,
     saveNote,
-    getTaskItem
+    getTaskItem,
+    getTaskPlan
   }
 }

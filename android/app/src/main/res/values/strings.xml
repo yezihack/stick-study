@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">学習打卡</string>
+    <string name="title_activity_main">学習打卡</string>
+    <string name="package_name">com.study.checkin</string>
+    <string name="custom_url_scheme">com.study.checkin</string>
+</resources>

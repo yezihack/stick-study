@@ -2,13 +2,14 @@ import { ref, computed } from 'vue'
 import { db } from '@/db'
 import type { DailyLog } from '@/db/models'
 import { TaskType } from '@/db/models'
+import { todayStr, offsetDays } from '@/utils/date'
 
 export type RangeKey = 'week' | 'month' | 'all'
 
 export interface WeekDay {
   weekday: number // 0=Sun … 6=Sat, resolved to localized label in the view
-  date: string    // "YYYY-MM-DD"
-  count: number   // completed tasks
+  date: string // "YYYY-MM-DD"
+  count: number // completed tasks
   isToday: boolean
 }
 
@@ -16,16 +17,6 @@ export interface TypeStat {
   type: TaskType
   count: number
   pct: number
-}
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function offsetDate(base: Date, days: number): string {
-  const d = new Date(base)
-  d.setDate(d.getDate() + days)
-  return d.toISOString().slice(0, 10)
 }
 
 export function useStats() {
@@ -48,8 +39,8 @@ export function useStats() {
 
     if (range.value === 'week') {
       const weekday = today.getDay() // 0=Sun
-      const monday = offsetDate(today, -(weekday === 0 ? 6 : weekday - 1))
-      const sunday = offsetDate(today, weekday === 0 ? 0 : 7 - weekday)
+      const monday = offsetDays(todayISO, -(weekday === 0 ? 6 : weekday - 1))
+      const sunday = offsetDays(todayISO, weekday === 0 ? 0 : 7 - weekday)
       return allLogs.value.filter(l => l.date >= monday && l.date <= sunday)
     }
 
@@ -63,8 +54,8 @@ export function useStats() {
     filteredLogs.value.reduce((sum, l) => sum + l.tasks.filter(t => t.completed).length, 0)
   )
 
-  const totalDays = computed(() =>
-    filteredLogs.value.filter(l => l.tasks.some(t => t.completed)).length
+  const totalDays = computed(
+    () => filteredLogs.value.filter(l => l.tasks.some(t => t.completed)).length
   )
 
   // ── Current week bar chart data ───────────────────────────
@@ -77,13 +68,12 @@ export function useStats() {
     const days: WeekDay[] = []
 
     for (let i = 0; i < 7; i++) {
-      const d = new Date(today)
-      d.setDate(today.getDate() + mondayOffset + i)
-      const dateStr = d.toISOString().slice(0, 10)
+      const dateStr = offsetDays(todayISO, mondayOffset + i)
+      const [yy, mm, dd] = dateStr.split('-').map(Number)
       const log = allLogs.value.find(l => l.date === dateStr)
       const count = log ? log.tasks.filter(t => t.completed).length : 0
       days.push({
-        weekday: d.getDay(),
+        weekday: new Date(yy, mm - 1, dd).getDay(),
         date: dateStr,
         count,
         isToday: dateStr === todayISO
@@ -128,9 +118,7 @@ export function useStats() {
       }
     }
 
-    const logs = range.value === 'all'
-      ? allLogs.value
-      : filteredLogs.value
+    const logs = range.value === 'all' ? allLogs.value : filteredLogs.value
 
     const counts: Partial<Record<TaskType, number>> = {}
     for (const log of logs) {
@@ -144,13 +132,13 @@ export function useStats() {
     }
 
     const total = Object.values(counts).reduce((s, v) => s + (v ?? 0), 0)
-    richTypeStats.value = (Object.entries(counts) as [TaskType, number][]).map(
-      ([type, count]) => ({
+    richTypeStats.value = (Object.entries(counts) as [TaskType, number][])
+      .map(([type, count]) => ({
         type,
         count,
         pct: total > 0 ? Math.round((count / total) * 100) : 0
-      })
-    ).sort((a, b) => b.count - a.count)
+      }))
+      .sort((a, b) => b.count - a.count)
   }
 
   async function setRange(r: RangeKey) {

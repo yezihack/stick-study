@@ -9,18 +9,56 @@
           <span class="card-dates">{{ plan.startDate }} ～ {{ plan.endDate }}</span>
         </div>
         <div class="head-side">
-          <span class="status-dot" :style="{ background: plan.isActive ? 'var(--moss)' : 'rgba(26,31,26,0.2)' }" />
+          <span
+            class="status-dot"
+            :style="{ background: plan.isActive ? 'var(--moss)' : 'rgba(var(--ink-rgb),0.2)' }"
+          />
           <div class="card-actions">
             <button class="action-btn" :aria-label="t('common.edit')" @click="$emit('edit', plan)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M4 20h4l10-10-4-4L4 16z" />
+                <path d="M13.5 6.5l4 4" />
+              </svg>
             </button>
             <button
               class="action-btn"
               :aria-label="plan.isActive ? t('plans.form.archive') : t('plans.active')"
               @click="$emit('toggle', plan.id)"
             >
-              <svg v-if="plan.isActive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="5" width="17" height="4" rx="1"/><path d="M5 9v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><line x1="10" y1="13" x2="14" y2="13"/></svg>
-              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M7 5l11 7-11 7z"/></svg>
+              <svg
+                v-if="plan.isActive"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect x="3.5" y="5" width="17" height="4" rx="1" />
+                <path d="M5 9v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9" />
+                <line x1="10" y1="13" x2="14" y2="13" />
+              </svg>
+              <svg
+                v-else
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M7 5l11 7-11 7z" />
+              </svg>
             </button>
           </div>
         </div>
@@ -29,7 +67,10 @@
       <!-- Progress bar -->
       <div class="card-progress">
         <div class="progress-track">
-          <div class="progress-fill" :style="{ width: progress.pct + '%', background: plan.color }" />
+          <div
+            class="progress-fill"
+            :style="{ width: progress.pct + '%', background: plan.color }"
+          />
         </div>
         <span class="days-left" :class="{ over: progress.daysLeft < 0 }">
           {{
@@ -44,7 +85,9 @@
     <!-- 小任务: sub-task list (paper-toned zone) -->
     <div v-if="items.length > 0" class="card-tasks">
       <div v-for="item in items" :key="item.id" class="task-row">
-        <span class="task-badge" :style="typeStyle(item.type)">{{ t('taskType.' + item.type) }}</span>
+        <span class="task-badge" :style="typeStyle(item.type)">{{
+          t('taskType.' + item.type)
+        }}</span>
         <span class="task-desc">{{ item.description || t('taskType.' + item.type) }}</span>
         <span class="task-count">×{{ item.count }}{{ unitSuffix(item.type) }}</span>
       </div>
@@ -70,9 +113,7 @@ const { getPlanProgress } = usePlans()
 const progress = computed(() => getPlanProgress(props.plan))
 
 // Flatten all task items across this plan's templates for display
-const items = computed<TaskItem[]>(() =>
-  (props.templates ?? []).flatMap(tpl => tpl.items)
-)
+const items = computed<TaskItem[]>(() => (props.templates ?? []).flatMap(tpl => tpl.items))
 
 // Tinted badge color per task type
 const TYPE_COLORS: Record<string, string> = {
@@ -105,7 +146,7 @@ function unitSuffix(type: string): string {
 
 /* ── 大任务: header zone (white) ───────────────────── */
 .card-head {
-  background: white;
+  background: var(--surface);
   border-left: 4px solid var(--sakura);
   padding: 14px 16px 12px;
   display: flex;
@@ -139,13 +180,13 @@ function unitSuffix(type: string): string {
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 0.85rem;
-  color: rgba(26,31,26,0.55);
+  color: rgba(var(--ink-rgb), 0.55);
 }
 
 .card-dates {
   font-family: var(--font-mono);
   font-size: 0.74rem;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   margin-top: 2px;
 }
 
@@ -178,13 +219,16 @@ function unitSuffix(type: string): string {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(26,31,26,0.55);
+  color: rgba(var(--ink-rgb), 0.55);
 }
 
-.action-btn svg { width: 18px; height: 18px; }
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+}
 
 .action-btn:hover {
-  background: rgba(26,31,26,0.06);
+  background: rgba(var(--ink-rgb), 0.06);
   color: var(--ink);
 }
 
@@ -197,7 +241,7 @@ function unitSuffix(type: string): string {
 .progress-track {
   flex: 1;
   height: 4px;
-  background: rgba(26,31,26,0.08);
+  background: rgba(var(--ink-rgb), 0.08);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -215,12 +259,14 @@ function unitSuffix(type: string): string {
   color: var(--moss);
 }
 
-.days-left.over { color: rgba(26,31,26,0.35); }
+.days-left.over {
+  color: rgba(var(--ink-rgb), 0.35);
+}
 
 /* ── 小任务: sub-task zone (paper tone) ────────────── */
 .card-tasks {
-  background: color-mix(in srgb, var(--paper) 70%, white);
-  border-top: 1px solid rgba(26,31,26,0.06);
+  background: var(--paper);
+  border-top: 1px solid rgba(var(--ink-rgb), 0.06);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -257,6 +303,6 @@ function unitSuffix(type: string): string {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgba(26,31,26,0.55);
+  color: rgba(var(--ink-rgb), 0.55);
 }
 </style>

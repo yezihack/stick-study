@@ -7,17 +7,23 @@
   --sakura: #c0544a;
   --gold: #b8962a;
   --moss: #4a6741;
-  
+
+  /* Ink as an RGB triplet so components can build rgba() tints that
+     adapt to dark mode, e.g. rgba(var(--ink-rgb), 0.5) */
+  --ink-rgb: 26, 31, 26;
+  /* Card / input surface color (sits above --paper) */
+  --surface: #ffffff;
+
   /* Typography */
   --font-sans: 'Noto Sans', 'Noto Sans SC', 'Noto Sans JP', system-ui, sans-serif;
   --font-serif: 'Noto Serif', 'Noto Serif JP', serif;
   --font-mono: 'DM Mono', 'Courier New', monospace;
-  
+
   /* Spacing */
   --radius-sm: 10px;
   --radius-md: 16px;
   --nav-height: 72px;
-  
+
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(26, 31, 26, 0.08);
   --shadow-md: 0 4px 16px rgba(26, 31, 26, 0.12);
@@ -30,6 +36,8 @@
   --sakura: #d86a60;
   --gold: #d4a832;
   --moss: #6a9761;
+  --ink-rgb: 232, 239, 232;
+  --surface: #252a25;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
@@ -48,6 +56,9 @@ body {
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Offset content below the device status bar (edge-to-edge WebView).
+     Requires viewport-fit=cover in index.html for the inset to resolve. */
+  padding-top: env(safe-area-inset-top, 0);
 }
 
 #app {
@@ -55,10 +66,13 @@ body {
   padding-bottom: var(--nav-height);
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-serif);
 }
 
-code, pre {
+code,
+pre {
   font-family: var(--font-mono);
 }

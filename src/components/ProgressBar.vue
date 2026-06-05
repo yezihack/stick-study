@@ -4,12 +4,14 @@
       <span class="progress-label">{{ t('today.progress') }}</span>
       <span class="progress-count">{{ t('today.progressDetail', { done, total }) }}</span>
     </div>
-    <div class="progress-track" role="progressbar" :aria-valuenow="pct" aria-valuemin="0" aria-valuemax="100">
-      <div
-        class="progress-fill"
-        :style="{ width: pct + '%' }"
-        :class="{ done: pct === 100 }"
-      />
+    <div
+      class="progress-track"
+      role="progressbar"
+      :aria-valuenow="pct"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <div class="progress-fill" :style="{ width: pct + '%' }" :class="{ done: pct === 100 }" />
     </div>
   </div>
 </template>
@@ -21,9 +23,7 @@ import { useI18n } from 'vue-i18n'
 const props = defineProps<{ done: number; total: number }>()
 const { t } = useI18n()
 
-const pct = computed(() =>
-  props.total === 0 ? 0 : Math.round((props.done / props.total) * 100)
-)
+const pct = computed(() => (props.total === 0 ? 0 : Math.round((props.done / props.total) * 100)))
 </script>
 
 <style scoped>
@@ -41,7 +41,7 @@ const pct = computed(() =>
 
 .progress-label {
   font-size: 0.8rem;
-  color: rgba(26, 31, 26, 0.6);
+  color: rgba(var(--ink-rgb), 0.6);
   font-family: var(--font-sans);
 }
 
@@ -54,7 +54,7 @@ const pct = computed(() =>
 
 .progress-track {
   height: 8px;
-  background: rgba(26, 31, 26, 0.1);
+  background: rgba(var(--ink-rgb), 0.1);
   border-radius: 999px;
   overflow: hidden;
 }

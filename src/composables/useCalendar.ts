@@ -1,12 +1,13 @@
 import { ref, computed } from 'vue'
 import { db } from '@/db'
 import type { DailyLog } from '@/db/models'
+import { todayStr, offsetDays } from '@/utils/date'
 
 export type DayStatus = 'done' | 'partial' | 'none' | 'future'
 
 export interface CalendarDay {
-  date: string       // "YYYY-MM-DD", empty string = padding cell
-  day: number        // 0 = padding
+  date: string // "YYYY-MM-DD", empty string = padding cell
+  day: number // 0 = padding
   status: DayStatus
   isToday: boolean
   isCurrentMonth: boolean
@@ -14,10 +15,6 @@ export interface CalendarDay {
 
 function toDateStr(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
-}
-
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10)
 }
 
 function logStatus(log: DailyLog | undefined): DayStatus {
@@ -43,14 +40,18 @@ export function useCalendar() {
 
   // ── Month navigation ─────────────────────────────────────
   function prevMonth() {
-    if (viewMonth.value === 0) { viewYear.value--; viewMonth.value = 11 }
-    else viewMonth.value--
+    if (viewMonth.value === 0) {
+      viewYear.value--
+      viewMonth.value = 11
+    } else viewMonth.value--
     loadMonth()
   }
 
   function nextMonth() {
-    if (viewMonth.value === 11) { viewYear.value++; viewMonth.value = 0 }
-    else viewMonth.value++
+    if (viewMonth.value === 11) {
+      viewYear.value++
+      viewMonth.value = 0
+    } else viewMonth.value++
     loadMonth()
   }
 
@@ -63,10 +64,7 @@ export function useCalendar() {
     const lastDay = new Date(y, m + 1, 0).getDate()
     const to = toDateStr(y, m, lastDay)
 
-    const logs = await db.dailyLogs
-      .where('date')
-      .between(from, to, true, true)
-      .toArray()
+    const logs = await db.dailyLogs.where('date').between(from, to, true, true).toArray()
 
     const map = new Map<string, DailyLog>()
     for (const l of logs) map.set(l.date, l)
@@ -146,14 +144,15 @@ export function useCalendar() {
     const cursor = new Date(today)
 
     for (let i = 0; i < 365; i++) {
-      const dateStr = cursor.toISOString().slice(0, 10)
-      const log = await db.dailyLogs
-        .where('date').equals(dateStr)
-        .first()
+      const dateStr = todayStr(cursor)
+      const log = await db.dailyLogs.where('date').equals(dateStr).first()
 
       if (!log || !log.completedAt) {
         // Today without completedAt still counts ongoing streak
-        if (dateStr === today) { cursor.setDate(cursor.getDate() - 1); continue }
+        if (dateStr === today) {
+          cursor.setDate(cursor.getDate() - 1)
+          continue
+        }
         break
       }
       count++
@@ -166,21 +165,58 @@ export function useCalendar() {
   const recentLogs = ref<DailyLog[]>([])
 
   async function loadRecent() {
-    const all = await db.dailyLogs
-      .where('completedAt')
-      .notEqual('')
-      .reverse()
-      .limit(10)
-      .toArray()
+    const all = await db.dailyLogs.where('completedAt').notEqual('').reverse().limit(10).toArray()
     // filter out nulls (Dexie returns null-indexed too)
     recentLogs.value = all.filter(l => l.completedAt !== null)
+  }
+
+  // ── Period completion rates (today / yesterday / last week) ─
+  // Rate = completed tasks ÷ total tasks across the period.
+  // `null` means "no tasks scheduled in that period" → render as "—".
+  const periodStats = ref<{
+    today: number | null
+    yesterday: number | null
+    lastWeek: number | null
+  }>({ today: null, yesterday: null, lastWeek: null })
+
+  function rateFromLogs(logs: DailyLog[]): number | null {
+    let total = 0
+    let done = 0
+    for (const l of logs) {
+      total += l.tasks.length
+      done += l.tasks.filter(t => t.completed).length
+    }
+    if (total === 0) return null
+    return Math.round((done / total) * 100)
+  }
+
+  async function loadPeriodStats() {
+    const yesterday = offsetDays(today, -1)
+
+    // Previous calendar week: the Mon–Sun block before this week's Monday.
+    const weekday = now.getDay() // 0=Sun … 6=Sat
+    const thisMonday = offsetDays(today, weekday === 0 ? -6 : 1 - weekday)
+    const lastMonday = offsetDays(thisMonday, -7)
+    const lastSunday = offsetDays(thisMonday, -1)
+
+    const [todayLog, yesterdayLog, lastWeekLogs] = await Promise.all([
+      db.dailyLogs.where('date').equals(today).first(),
+      db.dailyLogs.where('date').equals(yesterday).first(),
+      db.dailyLogs.where('date').between(lastMonday, lastSunday, true, true).toArray()
+    ])
+
+    periodStats.value = {
+      today: rateFromLogs(todayLog ? [todayLog] : []),
+      yesterday: rateFromLogs(yesterdayLog ? [yesterdayLog] : []),
+      lastWeek: rateFromLogs(lastWeekLogs)
+    }
   }
 
   // ── Day detail ────────────────────────────────────────────
   async function selectDay(date: string) {
     if (!date) return
     selectedDate.value = date
-    selectedLog.value = await db.dailyLogs.where('date').equals(date).first() ?? null
+    selectedLog.value = (await db.dailyLogs.where('date').equals(date).first()) ?? null
   }
 
   function closeDetail() {
@@ -190,7 +226,7 @@ export function useCalendar() {
 
   // ── Init ─────────────────────────────────────────────────
   async function load() {
-    await Promise.all([loadMonth(), calcStreak(), loadRecent()])
+    await Promise.all([loadMonth(), calcStreak(), loadRecent(), loadPeriodStats()])
   }
 
   return {
@@ -200,6 +236,7 @@ export function useCalendar() {
     calendarDays,
     monthStats,
     streak,
+    periodStats,
     recentLogs,
     selectedDate,
     selectedLog,

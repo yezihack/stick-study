@@ -5,10 +5,7 @@
       <span class="type-count">{{ stat.count }}</span>
     </div>
     <div class="type-track">
-      <div
-        class="type-fill"
-        :style="{ width: stat.pct + '%', background: color }"
-      />
+      <div class="type-fill" :style="{ width: stat.pct + '%', background: color }" />
     </div>
     <span class="type-pct">{{ stat.pct }}%</span>
   </div>
@@ -55,13 +52,13 @@ const color = computed(() => TYPE_COLORS[props.stat.type] ?? TYPE_COLORS.custom)
 .type-count {
   font-size: 0.8rem;
   font-family: var(--font-mono);
-  color: rgba(26,31,26,0.55);
+  color: rgba(var(--ink-rgb), 0.55);
 }
 
 .type-track {
   flex: 1;
   height: 8px;
-  background: rgba(26,31,26,0.08);
+  background: rgba(var(--ink-rgb), 0.08);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -75,7 +72,7 @@ const color = computed(() => TYPE_COLORS[props.stat.type] ?? TYPE_COLORS.custom)
 .type-pct {
   font-size: 0.75rem;
   font-family: var(--font-mono);
-  color: rgba(26,31,26,0.45);
+  color: rgba(var(--ink-rgb), 0.45);
   min-width: 32px;
   text-align: right;
 }

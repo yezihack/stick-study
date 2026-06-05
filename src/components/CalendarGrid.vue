@@ -57,7 +57,7 @@ const weekdayLabels = computed<string[]>(() => {
   text-align: center;
   font-size: 0.72rem;
   font-weight: 600;
-  color: rgba(26, 31, 26, 0.45);
+  color: rgba(var(--ink-rgb), 0.45);
   padding: 4px 0;
 }
 
@@ -110,7 +110,7 @@ const weekdayLabels = computed<string[]>(() => {
 }
 
 .day-cell.none.clickable {
-  background: rgba(26, 31, 26, 0.06);
+  background: rgba(var(--ink-rgb), 0.06);
 }
 
 .day-cell.today {

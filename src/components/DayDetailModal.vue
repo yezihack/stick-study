@@ -1,14 +1,24 @@
 <template>
   <Transition name="modal">
     <div v-if="show" class="modal-overlay" @click.self="$emit('close')">
-      <div class="modal-sheet" role="dialog" :aria-label="t('calendar.dayDetail.title', { date: date })">
+      <div
+        class="modal-sheet"
+        role="dialog"
+        :aria-label="t('calendar.dayDetail.title', { date: date })"
+      >
         <!-- Handle bar -->
         <div class="modal-handle" />
 
         <!-- Header -->
         <div class="modal-header">
           <h2 class="modal-title">{{ formattedDate }}</h2>
-          <button class="close-btn" :aria-label="t('calendar.dayDetail.close')" @click="$emit('close')">✕</button>
+          <button
+            class="close-btn"
+            :aria-label="t('calendar.dayDetail.close')"
+            @click="$emit('close')"
+          >
+            ✕
+          </button>
         </div>
 
         <!-- No data -->
@@ -67,7 +77,11 @@ const formattedDate = computed(() => {
   if (!props.date) return ''
   const [y, m, d] = props.date.split('-').map(Number)
   if (locale.value === 'en') {
-    return new Date(y, m - 1, d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
   }
   return `${y}年${m}月${d}日`
 })
@@ -75,7 +89,8 @@ const formattedDate = computed(() => {
 function resolveLabel(taskItemId: string): string {
   for (const tpl of props.templates) {
     const item = tpl.items.find(i => i.id === taskItemId)
-    if (item) return `${item.count} ${t(`taskType.${item.type}`)}${item.description ? ' — ' + item.description : ''}`
+    if (item)
+      return `${item.count} ${t(`taskType.${item.type}`)}${item.description ? ' — ' + item.description : ''}`
   }
   return taskItemId
 }
@@ -85,7 +100,7 @@ function resolveLabel(taskItemId: string): string {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: flex-end;
   z-index: 300;
@@ -103,7 +118,7 @@ function resolveLabel(taskItemId: string): string {
 .modal-handle {
   width: 40px;
   height: 4px;
-  background: rgba(26,31,26,0.15);
+  background: rgba(var(--ink-rgb), 0.15);
   border-radius: 2px;
   margin: 10px auto 4px;
 }
@@ -126,7 +141,7 @@ function resolveLabel(taskItemId: string): string {
   background: transparent;
   border: none;
   font-size: 1rem;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   cursor: pointer;
   padding: 4px 8px;
 }
@@ -134,7 +149,7 @@ function resolveLabel(taskItemId: string): string {
 .modal-empty {
   text-align: center;
   padding: 2rem 0;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   font-size: 0.9rem;
 }
 
@@ -180,7 +195,7 @@ function resolveLabel(taskItemId: string): string {
 }
 
 .task-row:not(.completed) .task-check {
-  color: rgba(26,31,26,0.3);
+  color: rgba(var(--ink-rgb), 0.3);
 }
 
 .note-text {
@@ -193,13 +208,25 @@ function resolveLabel(taskItemId: string): string {
 
 .note-empty {
   font-size: 0.85rem;
-  color: rgba(26,31,26,0.4);
+  color: rgba(var(--ink-rgb), 0.4);
   margin: 0;
   font-style: italic;
 }
 
 /* Sheet slide-up */
-.modal-enter-active { transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.2s; }
-.modal-leave-active { transition: transform 0.2s ease, opacity 0.2s; }
-.modal-enter-from, .modal-leave-to { transform: translateY(100%); opacity: 0; }
+.modal-enter-active {
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity 0.2s;
+}
+.modal-leave-active {
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s;
+}
+.modal-enter-from,
+.modal-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
 </style>

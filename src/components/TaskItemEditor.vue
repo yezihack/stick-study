@@ -2,7 +2,9 @@
   <div class="item-editor">
     <!-- Type selector -->
     <div class="field-row">
-      <label class="field-label">{{ t('plans.template.weekdays') !== '适用星期' ? t('taskType.' + item.type) : '' }}</label>
+      <label class="field-label">{{
+        t('plans.template.weekdays') !== '适用星期' ? t('taskType.' + item.type) : ''
+      }}</label>
       <div class="type-pills">
         <button
           v-for="type in taskTypes"
@@ -25,7 +27,12 @@
         min="1"
         :value="item.count"
         :aria-label="t('plans.template.count')"
-        @input="emit('update', { ...item, count: Math.max(1, Number(($event.target as HTMLInputElement).value)) })"
+        @input="
+          emit('update', {
+            ...item,
+            count: Math.max(1, Number(($event.target as HTMLInputElement).value))
+          })
+        "
       />
       <input
         class="desc-input"
@@ -34,7 +41,12 @@
         :placeholder="t('plans.template.description')"
         @input="emit('update', { ...item, description: ($event.target as HTMLInputElement).value })"
       />
-      <button class="remove-btn" type="button" :aria-label="t('common.delete')" @click="emit('remove')">
+      <button
+        class="remove-btn"
+        type="button"
+        :aria-label="t('common.delete')"
+        @click="emit('remove')"
+      >
         ✕
       </button>
     </div>
@@ -58,7 +70,7 @@ const taskTypes = Object.values(TaskType)
 
 <style scoped>
 .item-editor {
-  background: rgba(26, 31, 26, 0.03);
+  background: rgba(var(--ink-rgb), 0.03);
   border-radius: var(--radius-sm);
   padding: 10px;
   display: flex;
@@ -68,7 +80,7 @@ const taskTypes = Object.values(TaskType)
 
 .field-label {
   font-size: 0.72rem;
-  color: rgba(26,31,26,0.5);
+  color: rgba(var(--ink-rgb), 0.5);
 }
 
 .type-pills {
@@ -79,12 +91,12 @@ const taskTypes = Object.values(TaskType)
 
 .type-pill {
   padding: 3px 9px;
-  border: 1.5px solid rgba(26,31,26,0.15);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
   border-radius: 20px;
   background: transparent;
   font-size: 0.72rem;
   cursor: pointer;
-  color: rgba(26,31,26,0.6);
+  color: rgba(var(--ink-rgb), 0.6);
   transition: all 0.12s;
 }
 
@@ -103,41 +115,47 @@ const taskTypes = Object.values(TaskType)
 .count-input {
   width: 60px;
   padding: 6px 8px;
-  border: 1.5px solid rgba(26,31,26,0.15);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
   border-radius: var(--radius-sm);
   font-size: 0.88rem;
   font-family: var(--font-mono);
   color: var(--ink);
-  background: white;
+  background: var(--surface);
   text-align: center;
   outline: none;
 }
 
-.count-input:focus { border-color: var(--sakura); }
+.count-input:focus {
+  border-color: var(--sakura);
+}
 
 .desc-input {
   flex: 1;
   padding: 6px 10px;
-  border: 1.5px solid rgba(26,31,26,0.15);
+  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
   font-family: var(--font-sans);
   color: var(--ink);
-  background: white;
+  background: var(--surface);
   outline: none;
 }
 
-.desc-input:focus { border-color: var(--sakura); }
+.desc-input:focus {
+  border-color: var(--sakura);
+}
 
 .remove-btn {
   padding: 4px 8px;
   background: transparent;
   border: none;
-  color: rgba(26,31,26,0.35);
+  color: rgba(var(--ink-rgb), 0.35);
   font-size: 0.85rem;
   cursor: pointer;
   border-radius: 4px;
 }
 
-.remove-btn:hover { color: var(--sakura); }
+.remove-btn:hover {
+  color: var(--sakura);
+}
 </style>
