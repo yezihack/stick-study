@@ -22,12 +22,20 @@
         </div>
       </div>
 
-      <!-- Dark mode -->
+      <!-- Theme mode -->
       <div class="settings-row">
-        <span class="row-label">{{ t('settings.darkMode') }}</span>
-        <button class="toggle-btn" :class="{ active: darkMode }" @click="toggleDarkMode">
-          <span class="toggle-knob" />
-        </button>
+        <span class="row-label">{{ t('settings.themeMode') }}</span>
+        <div class="lang-switcher">
+          <button
+            v-for="mode in themeModes"
+            :key="mode"
+            class="lang-btn"
+            :class="{ active: themeMode === mode }"
+            @click="changeThemeMode(mode)"
+          >
+            {{ t(`settings.theme.${mode}`) }}
+          </button>
+        </div>
       </div>
 
       <!-- Reminder -->
@@ -141,9 +149,62 @@
     <section class="settings-section about">
       <h2 class="section-title">{{ t('settings.section.about') }}</h2>
       <img class="about-logo" src="/logo.svg" alt="" width="72" height="72" />
-      <p class="version">{{ t('settings.version') }} 1.0.0</p>
-      <p class="slogan">{{ t('settings.slogan') }}</p>
+      <p class="version">{{ t('settings.version') }} {{ appConfig.version }}</p>
+      <p class="slogan">{{ appConfig.slogan }}</p>
+
+      <!-- GitHub -->
+      <a class="link-row" :href="appConfig.githubUrl" target="_blank" rel="noopener noreferrer">
+        <span class="link-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.3 9.3 0 0 1 12 6.84c.85 0 1.71.12 2.51.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"
+            />
+          </svg>
+        </span>
+        <div class="action-info">
+          <span class="action-label">{{ t('settings.github') }}</span>
+          <span class="action-sub">{{ t('settings.githubSub') }}</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <!-- Sponsor -->
+      <button class="link-row" @click="showSponsor = true">
+        <span class="link-icon heart">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 21s-7.5-4.6-10-9.4C.6 8.7 2 5.5 5 5.5c1.9 0 3.2 1.1 4 2.4.8-1.3 2.1-2.4 4-2.4 3 0 4.4 3.2 3 6.1C19.5 16.4 12 21 12 21z"
+            />
+          </svg>
+        </span>
+        <div class="action-info">
+          <span class="action-label">{{ t('settings.sponsor') }}</span>
+          <span class="action-sub">{{ t('settings.sponsorSub') }}</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </button>
+
+      <p class="no-ads">🛡️ {{ t('settings.noAds') }}</p>
     </section>
+
+    <!-- Sponsor QR dialog -->
+    <Transition name="fade">
+      <div v-if="showSponsor" class="sponsor-overlay" @click.self="showSponsor = false">
+        <div class="sponsor-dialog">
+          <h3 class="sponsor-title">{{ t('settings.sponsorDialogTitle') }}</h3>
+          <img class="sponsor-qr" :src="appConfig.wechatQrUrl" alt="WeChat Pay QR" />
+          <p class="sponsor-tip">{{ t('settings.sponsorDialogTip') }}</p>
+          <div class="sponsor-actions">
+            <button class="btn-download" @click="handleDownloadQr">
+              {{ t('settings.sponsorDownload') }}
+            </button>
+            <button class="btn-cancel" @click="showSponsor = false">
+              {{ t('common.close') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- Toast -->
     <Transition name="toast">
@@ -172,8 +233,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Capacitor } from '@capacitor/core'
+import { Media } from '@capacitor-community/media'
+import { appConfig } from '@/config'
 import { getConfig, updateConfig } from '@/db'
-import { applyTheme } from '@/utils/theme'
+import { applyThemeMode } from '@/utils/theme'
+import type { ThemeMode } from '@/db/models'
 import {
   exportData,
   importData,
@@ -195,11 +260,13 @@ const languages = [
   { code: 'ja', label: '日本語' }
 ] as const
 
-const darkMode = ref(false)
+const themeMode = ref<ThemeMode>('auto')
+const themeModes: ThemeMode[] = ['light', 'dark', 'auto']
 const reminderEnabled = ref(false)
 const reminderTime = ref('09:00')
 const storageSize = ref('—')
 const showDeleteConfirm = ref(false)
+const showSponsor = ref(false)
 
 const toast = ref({ show: false, message: '', type: 'info' })
 
@@ -207,8 +274,8 @@ const toast = ref({ show: false, message: '', type: 'info' })
 onMounted(async () => {
   const config = await getConfig()
   if (config) {
-    darkMode.value = config.darkMode
-    applyTheme(config.darkMode)
+    themeMode.value = config.themeMode ?? 'auto'
+    applyThemeMode(themeMode.value)
     reminderEnabled.value = config.reminderEnabled
     reminderTime.value = config.reminderTime || '09:00'
   }
@@ -225,11 +292,11 @@ async function changeLanguage(lang: 'zh-CN' | 'en' | 'ja') {
   }
 }
 
-// ── Dark mode ────────────────────────────────────────────────
-async function toggleDarkMode() {
-  darkMode.value = !darkMode.value
-  await applyTheme(darkMode.value)
-  await updateConfig({ darkMode: darkMode.value })
+// ── Theme mode ───────────────────────────────────────────────
+async function changeThemeMode(mode: ThemeMode) {
+  themeMode.value = mode
+  await applyThemeMode(mode)
+  await updateConfig({ themeMode: mode })
 }
 
 // ── Reminder ─────────────────────────────────────────────────
@@ -238,7 +305,7 @@ async function applyReminder() {
   await scheduleDailyReminder(
     {
       language: locale.value as 'zh-CN' | 'en' | 'ja',
-      darkMode: darkMode.value,
+      themeMode: themeMode.value,
       reminderEnabled: reminderEnabled.value,
       reminderTime: reminderTime.value
     },
@@ -307,6 +374,77 @@ async function handleClearData() {
     showToast(t('common.error'), 'error')
     console.error(err)
   }
+}
+
+// ── Sponsor QR download ──────────────────────────────────────
+// On native (Android/iOS) a browser `<a download>` is ignored by the
+// WebView, so the file never reaches the gallery even though the click
+// "succeeds". Use the Media plugin to save into the photo album instead.
+// On web, keep the blob-based `<a download>` flow.
+async function handleDownloadQr() {
+  if (Capacitor.isNativePlatform()) {
+    await saveQrToGallery()
+  } else {
+    await downloadQrInBrowser()
+  }
+}
+
+async function saveQrToGallery() {
+  try {
+    // Read the bundled QR (served by the Capacitor local server) as a
+    // base64 data URL — the native plugin can't resolve a relative path.
+    const res = await fetch(appConfig.wechatQrUrl)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const dataUrl = await blobToDataUrl(await res.blob())
+
+    // savePhoto on Android requires an existing album folder, so make
+    // sure ours exists first (createAlbum throws if it already does).
+    const albumName = 'StickStudy'
+    const { path } = await Media.getAlbumsPath()
+    try {
+      await Media.createAlbum({ name: albumName })
+    } catch {
+      // Album already exists — fine.
+    }
+
+    await Media.savePhoto({
+      path: dataUrl,
+      albumIdentifier: `${path}/${albumName}`,
+      fileName: `wxpay-${Date.now()}`
+    })
+    showToast(t('settings.toast.qrSavedToGallery'), 'success')
+  } catch (err) {
+    console.error(err)
+    showToast(t('settings.toast.qrDownloadFailed'), 'error')
+  }
+}
+
+async function downloadQrInBrowser() {
+  try {
+    const res = await fetch(appConfig.wechatQrUrl)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const url = URL.createObjectURL(await res.blob())
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'wxpay.jpg'
+    a.click()
+    URL.revokeObjectURL(url)
+    showToast(t('settings.toast.qrDownloaded'), 'success')
+  } catch (err) {
+    console.error(err)
+    // Fallback: let the user save it manually.
+    window.open(appConfig.wechatQrUrl, '_blank', 'noopener')
+    showToast(t('settings.toast.qrDownloadFailed'), 'error')
+  }
+}
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
 }
 
 function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
@@ -544,10 +682,132 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   opacity: 0.7;
 }
 
+/* About links (GitHub / Sponsor) */
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 0;
+  border-top: 1px solid rgba(128, 128, 128, 0.08);
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+}
+
+.about .link-row:first-of-type {
+  margin-top: 0.75rem;
+}
+
+.link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.link-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.link-icon.heart {
+  color: var(--sakura);
+}
+
+.link-row .action-info {
+  flex: 1;
+  text-align: left;
+}
+
+.link-arrow {
+  color: rgba(var(--ink-rgb), 0.3);
+  font-size: 1.1rem;
+}
+
+.no-ads {
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.08);
+  font-size: 0.8rem;
+  color: var(--moss);
+  font-weight: 500;
+}
+
+/* Sponsor dialog */
+.sponsor-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 400;
+  padding: 1rem;
+}
+
+.sponsor-dialog {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  max-width: 300px;
+  width: 100%;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.sponsor-title {
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin: 0 0 1rem;
+}
+
+.sponsor-qr {
+  display: block;
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+
+.sponsor-tip {
+  font-size: 0.82rem;
+  color: rgba(var(--ink-rgb), 0.6);
+  margin: 0.75rem 0 1rem;
+  line-height: 1.5;
+}
+
+.sponsor-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-download {
+  flex: 1;
+  padding: 10px;
+  background: var(--sakura);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 /* Toast */
 .toast {
   position: fixed;
-  top: 20px;
+  top: calc(env(safe-area-inset-top, 0px) + 20px);
   left: 50%;
   transform: translateX(-50%);
   padding: 10px 20px;

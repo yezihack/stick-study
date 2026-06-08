@@ -50,20 +50,33 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  /* Prevent the mobile rubber-band overscroll that reveals blank space
+     below short pages. The page only scrolls when content actually
+     overflows the viewport. */
+  overscroll-behavior: none;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--paper);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Offset content below the device status bar (edge-to-edge WebView).
-     Requires viewport-fit=cover in index.html for the inset to resolve. */
-  padding-top: env(safe-area-inset-top, 0);
 }
 
 #app {
+  /* Fill exactly the viewport (no more), so short pages don't become
+     scrollable. dvh tracks the dynamic mobile viewport; vh is a fallback. */
   min-height: 100vh;
-  padding-bottom: var(--nav-height);
+  min-height: 100dvh;
+  /* Offset content below the device status bar (edge-to-edge WebView).
+     Folded in here (border-box) so min-height stays within the viewport
+     instead of overflowing it. Requires viewport-fit=cover in index.html. */
+  padding-top: env(safe-area-inset-top, 0);
+  /* No bottom padding here — each page already reserves space for the
+     fixed bottom nav via its own padding-bottom. */
 }
 
 h1,

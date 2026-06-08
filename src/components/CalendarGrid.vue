@@ -113,6 +113,15 @@ const weekdayLabels = computed<string[]>(() => {
   background: rgba(var(--ink-rgb), 0.06);
 }
 
+/* Scheduled days (plan covers the day but no log yet) */
+.day-cell.scheduled {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--sakura);
+}
+.day-cell.scheduled .day-num {
+  color: var(--sakura);
+}
+
 .day-cell.today {
   outline: 2px solid var(--sakura);
   outline-offset: -2px;

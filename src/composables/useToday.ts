@@ -57,11 +57,16 @@ export function useToday() {
 
   // ── Generate tasks from templates ────────────────────────
   function buildTasksFromTemplates(plans: Plan[], tpls: TaskTemplate[]): TaskLog[] {
-    const today = new Date()
-    const weekday = today.getDay() // 0=Sun … 6=Sat
+    const now = new Date()
+    const today = todayStr(now)
+    const weekday = now.getDay() // 0=Sun … 6=Sat
     const logs: TaskLog[] = []
 
     for (const plan of plans) {
+      // Skip plans not yet started or already ended — their tasks only show
+      // on the calendar for their scheduled days, not on today's list.
+      if (today < plan.startDate || today > plan.endDate) continue
+
       // Find matching template for today's weekday
       const matching = tpls
         .filter(t => t.planId === plan.id)

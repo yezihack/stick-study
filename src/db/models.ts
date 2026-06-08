@@ -52,10 +52,14 @@ export interface DailyLog {
   completedAt: string | null // 全部完成的时间戳
 }
 
+export type ThemeMode = 'light' | 'dark' | 'auto'
+
 export interface AppConfig {
   id?: number // Dexie auto-increment
   language: 'zh-CN' | 'en' | 'ja'
-  darkMode: boolean
+  themeMode: ThemeMode
+  /** @deprecated kept for migrating data from older versions; use themeMode */
+  darkMode?: boolean
   reminderEnabled: boolean
   reminderTime: string // "HH:mm"
 }

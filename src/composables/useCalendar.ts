@@ -1,9 +1,9 @@
 import { ref, computed } from 'vue'
 import { db } from '@/db'
-import type { DailyLog } from '@/db/models'
+import type { DailyLog, Plan, TaskItem, TaskTemplate } from '@/db/models'
 import { todayStr, offsetDays } from '@/utils/date'
 
-export type DayStatus = 'done' | 'partial' | 'none' | 'future'
+export type DayStatus = 'done' | 'partial' | 'none' | 'future' | 'scheduled'
 
 export interface CalendarDay {
   date: string // "YYYY-MM-DD", empty string = padding cell
@@ -34,9 +34,35 @@ export function useCalendar() {
   // All DailyLogs for the visible month (loaded on demand)
   const monthLogs = ref<Map<string, DailyLog>>(new Map())
 
+  // Active plans + their templates, used to project scheduled (not-yet-logged)
+  // tasks onto calendar days that fall within a plan's date range.
+  const plans = ref<Plan[]>([])
+  const templates = ref<TaskTemplate[]>([])
+
   // Selected day detail
   const selectedDate = ref<string | null>(null)
   const selectedLog = ref<DailyLog | null>(null)
+  // Scheduled task items for the selected day when no log exists yet.
+  const selectedScheduled = ref<TaskItem[]>([])
+
+  // ── Scheduled tasks for a given date (from plan templates) ──
+  // Returns the task items scheduled on `date` for plans whose range covers it.
+  function scheduledItemsForDate(date: string): TaskItem[] {
+    if (!date) return []
+    const [y, m, d] = date.split('-').map(Number)
+    const weekday = new Date(y, m - 1, d).getDay() // 0=Sun … 6=Sat
+    const items: TaskItem[] = []
+
+    for (const plan of plans.value) {
+      if (!plan.isActive) continue
+      if (date < plan.startDate || date > plan.endDate) continue
+      const matching = templates.value
+        .filter(t => t.planId === plan.id)
+        .find(t => t.weekdays.length === 0 || t.weekdays.includes(weekday))
+      if (matching) items.push(...matching.items)
+    }
+    return items
+  }
 
   // ── Month navigation ─────────────────────────────────────
   function prevMonth() {
@@ -88,10 +114,21 @@ export function useCalendar() {
       const dateStr = toDateStr(y, m, d)
       const isFuture = dateStr > today
       const log = monthLogs.value.get(dateStr)
+      let status: DayStatus
+      if (isFuture) {
+        // Future days with scheduled tasks get a distinct marker.
+        status = scheduledItemsForDate(dateStr).length > 0 ? 'scheduled' : 'future'
+      } else {
+        status = logStatus(log)
+        // Past/today days without a log but with scheduled tasks also marked.
+        if (status === 'none' && !log && scheduledItemsForDate(dateStr).length > 0) {
+          status = 'scheduled'
+        }
+      }
       cells.push({
         date: dateStr,
         day: d,
-        status: isFuture ? 'future' : logStatus(log),
+        status,
         isToday: dateStr === today,
         isCurrentMonth: true
       })
@@ -217,15 +254,23 @@ export function useCalendar() {
     if (!date) return
     selectedDate.value = date
     selectedLog.value = (await db.dailyLogs.where('date').equals(date).first()) ?? null
+    // When no log exists yet, surface the tasks scheduled for that day so the
+    // user can see what a not-yet-started plan has planned.
+    selectedScheduled.value = selectedLog.value ? [] : scheduledItemsForDate(date)
   }
 
   function closeDetail() {
     selectedDate.value = null
     selectedLog.value = null
+    selectedScheduled.value = []
   }
 
   // ── Init ─────────────────────────────────────────────────
   async function load() {
+    plans.value = await db.plans.filter(p => p.isActive).toArray()
+    const planIds = plans.value.map(p => p.id)
+    templates.value =
+      planIds.length > 0 ? await db.taskTemplates.where('planId').anyOf(planIds).toArray() : []
     await Promise.all([loadMonth(), calcStreak(), loadRecent(), loadPeriodStats()])
   }
 
@@ -240,6 +285,7 @@ export function useCalendar() {
     recentLogs,
     selectedDate,
     selectedLog,
+    selectedScheduled,
     load,
     prevMonth,
     nextMonth,

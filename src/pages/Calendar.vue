@@ -62,6 +62,9 @@
       <span class="legend-item">
         <span class="legend-dot none" />{{ t('calendar.status.none') }}
       </span>
+      <span class="legend-item">
+        <span class="legend-dot scheduled" />{{ t('calendar.status.scheduled') }}
+      </span>
     </div>
 
     <!-- Recent history -->
@@ -84,6 +87,7 @@
       :show="!!selectedDate"
       :date="selectedDate"
       :log="selectedLog"
+      :scheduled="selectedScheduled"
       :templates="templates"
       @close="closeDetail"
     />
@@ -110,6 +114,7 @@ const {
   recentLogs,
   selectedDate,
   selectedLog,
+  selectedScheduled,
   load,
   prevMonth,
   nextMonth,
@@ -266,6 +271,11 @@ onMounted(async () => {
 }
 .legend-dot.none {
   background: rgba(var(--ink-rgb), 0.12);
+}
+
+.legend-dot.scheduled {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--sakura);
 }
 
 /* Recent */

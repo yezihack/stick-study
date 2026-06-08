@@ -174,7 +174,7 @@ npm run format
 npm run build
 
 # 2. 同步到原生平台
-npx cap sync
+npx cap sync android
 
 # 3. Android（需 Android Studio）
 npm install @capacitor/android

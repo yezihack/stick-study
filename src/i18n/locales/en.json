@@ -45,12 +45,14 @@
       "note": "Notes",
       "noNote": "No notes",
       "noTasks": "No tasks that day",
+      "scheduled": "Scheduled",
       "close": "Close"
     },
     "status": {
       "done": "Complete",
       "partial": "Partial",
-      "none": "No check-in"
+      "none": "No check-in",
+      "scheduled": "Not started"
     }
   },
   "stats": {
@@ -121,7 +123,12 @@
       "about": "About"
     },
     "language": "Language",
-    "darkMode": "Dark mode",
+    "themeMode": "Theme",
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "auto": "Auto"
+    },
     "reminder": "Daily reminder",
     "reminderTime": "Reminder time",
     "export": "Export data",
@@ -138,10 +145,20 @@
       "importSuccess": "Data imported",
       "clearSuccess": "Data cleared",
       "reminderSet": "Reminder set",
-      "permissionDenied": "Notification permission denied"
+      "permissionDenied": "Notification permission denied",
+      "qrDownloaded": "QR code downloaded",
+      "qrSavedToGallery": "QR code saved to gallery",
+      "qrDownloadFailed": "Download failed, please try again"
     },
     "version": "Version",
-    "slogan": "Consistency is the best study method"
+    "github": "GitHub repository",
+    "githubSub": "Star ⭐ to say thanks",
+    "sponsor": "Sponsor the author",
+    "sponsorSub": "Buy a coffee to support development",
+    "sponsorDialogTitle": "WeChat Sponsor",
+    "sponsorDialogTip": "Scan with WeChat to sponsor. Thank you ❤️",
+    "sponsorDownload": "Download QR code",
+    "noAds": "No ads, use with confidence"
   },
   "taskType": {
     "questions": "Questions",

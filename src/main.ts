@@ -3,18 +3,18 @@ import App from './App.vue'
 import router from './router'
 import i18n, { loadLocaleFromDB } from './i18n'
 import { initializeDatabase, getConfig } from './db'
-import { applyTheme } from './utils/theme'
+import { applyThemeMode } from './utils/theme'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(i18n)
 
-// Apply saved dark mode preference before mount
+// Apply saved theme preference before mount
 async function applySavedTheme() {
   try {
     const config = await getConfig()
-    await applyTheme(Boolean(config?.darkMode))
+    await applyThemeMode(config?.themeMode ?? 'auto')
   } catch (error) {
     console.error('Failed to apply saved theme:', error)
   }

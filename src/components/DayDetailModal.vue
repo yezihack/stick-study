@@ -22,8 +22,19 @@
         </div>
 
         <!-- No data -->
-        <div v-if="!log" class="modal-empty">
+        <div v-if="!log && scheduled.length === 0" class="modal-empty">
           <p>{{ t('calendar.dayDetail.noTasks') }}</p>
+        </div>
+
+        <!-- Scheduled (no log yet, plan not started/logged) -->
+        <div v-else-if="!log" class="modal-section">
+          <p class="section-label">{{ t('calendar.dayDetail.scheduled') }}</p>
+          <ul class="task-list">
+            <li v-for="item in scheduled" :key="item.id" class="task-row">
+              <span class="task-check">○</span>
+              <span class="task-name">{{ scheduledLabel(item) }}</span>
+            </li>
+          </ul>
         </div>
 
         <template v-else>
@@ -60,12 +71,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { DailyLog, TaskTemplate } from '@/db/models'
+import type { DailyLog, TaskItem, TaskTemplate } from '@/db/models'
 
 const props = defineProps<{
   show: boolean
   date: string | null
   log: DailyLog | null
+  scheduled: TaskItem[]
   templates: TaskTemplate[]
 }>()
 
@@ -93,6 +105,10 @@ function resolveLabel(taskItemId: string): string {
       return `${item.count} ${t(`taskType.${item.type}`)}${item.description ? ' — ' + item.description : ''}`
   }
   return taskItemId
+}
+
+function scheduledLabel(item: TaskItem): string {
+  return `${item.count} ${t(`taskType.${item.type}`)}${item.description ? ' — ' + item.description : ''}`
 }
 </script>
 

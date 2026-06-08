@@ -45,12 +45,14 @@
       "note": "メモ",
       "noNote": "メモなし",
       "noTasks": "この日にタスクはありません",
+      "scheduled": "予定タスク",
       "close": "閉じる"
     },
     "status": {
       "done": "完了",
       "partial": "一部完了",
-      "none": "未記録"
+      "none": "未記録",
+      "scheduled": "未開始"
     }
   },
   "stats": {
@@ -121,7 +123,12 @@
       "about": "このアプリについて"
     },
     "language": "言語",
-    "darkMode": "ダークモード",
+    "themeMode": "テーマ",
+    "theme": {
+      "light": "ライト",
+      "dark": "ダーク",
+      "auto": "自動"
+    },
     "reminder": "学習リマインダー",
     "reminderTime": "リマインド時刻",
     "export": "データをエクスポート",
@@ -138,10 +145,20 @@
       "importSuccess": "データをインポートしました",
       "clearSuccess": "データを削除しました",
       "reminderSet": "リマインダーを設定しました",
-      "permissionDenied": "通知の許可が拒否されました"
+      "permissionDenied": "通知の許可が拒否されました",
+      "qrDownloaded": "QRコードをダウンロードしました",
+      "qrSavedToGallery": "QRコードをアルバムに保存しました",
+      "qrDownloadFailed": "ダウンロードに失敗しました。もう一度お試しください"
     },
     "version": "バージョン",
-    "slogan": "継続は力なり"
+    "github": "GitHub リポジトリ",
+    "githubSub": "Star ⭐ で応援してください",
+    "sponsor": "作者を支援する",
+    "sponsorSub": "コーヒー一杯で開発を応援",
+    "sponsorDialogTitle": "WeChat で支援",
+    "sponsorDialogTip": "WeChat でスキャンして支援。ありがとうございます ❤️",
+    "sponsorDownload": "QRコードをダウンロード",
+    "noAds": "広告なし、安心してご利用ください"
   },
   "taskType": {
     "questions": "問題",

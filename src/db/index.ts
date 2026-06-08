@@ -34,13 +34,21 @@ export async function initializeDatabase() {
       // Insert default config
       const defaultConfig: AppConfig = {
         language: detectSystemLanguage(),
-        darkMode: false,
+        themeMode: 'auto',
         reminderEnabled: false,
         reminderTime: '09:00'
       }
 
       await db.config.add(defaultConfig)
       console.log('✅ Database initialized with default config')
+    } else {
+      // Migrate legacy configs that only have the boolean `darkMode` field.
+      const config = await getConfig()
+      if (config && config.id && config.themeMode === undefined) {
+        await db.config.update(config.id, {
+          themeMode: config.darkMode ? 'dark' : 'light'
+        })
+      }
     }
   } catch (error) {
     console.error('❌ Failed to initialize database:', error)
