@@ -19,21 +19,29 @@
       </div>
     </div>
 
-    <!-- Count + description row -->
+    <!-- Count slider + description row -->
     <div class="item-row">
-      <input
-        class="count-input"
-        type="number"
-        min="1"
-        :value="item.count"
-        :aria-label="t('plans.template.count')"
-        @input="
-          emit('update', {
-            ...item,
-            count: Math.max(1, Number(($event.target as HTMLInputElement).value))
-          })
-        "
-      />
+      <div class="count-field">
+        <div class="count-header">
+          <label class="count-label">{{ t('plans.template.count') }}</label>
+          <span class="count-value">{{ item.count }}</span>
+        </div>
+        <input
+          class="count-slider"
+          type="range"
+          min="1"
+          max="100"
+          step="1"
+          :value="item.count"
+          :aria-label="t('plans.template.count')"
+          @input="
+            emit('update', {
+              ...item,
+              count: Math.max(1, Number(($event.target as HTMLInputElement).value))
+            })
+          "
+        />
+      </div>
       <input
         class="desc-input"
         type="text"
@@ -108,25 +116,69 @@ const taskTypes = Object.values(TaskType)
 
 .item-row {
   display: flex;
-  gap: 6px;
-  align-items: center;
+  gap: 8px;
+  align-items: stretch;
 }
 
-.count-input {
-  width: 60px;
-  padding: 6px 8px;
-  border: 1.5px solid rgba(var(--ink-rgb), 0.15);
-  border-radius: var(--radius-sm);
-  font-size: 0.88rem;
+.count-field {
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.count-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.count-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(var(--ink-rgb), 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.count-value {
   font-family: var(--font-mono);
-  color: var(--ink);
-  background: var(--surface);
-  text-align: center;
-  outline: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--sakura);
 }
 
-.count-input:focus {
-  border-color: var(--sakura);
+.count-slider {
+  width: 100%;
+  height: 5px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(var(--ink-rgb), 0.12);
+  border-radius: 3px;
+  outline: none;
+  margin: 2px 0;
+}
+
+.count-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--sakura);
+  border: 2.5px solid white;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.count-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--sakura);
+  border: 2.5px solid white;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .desc-input {

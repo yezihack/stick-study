@@ -6,6 +6,7 @@ export enum TaskType {
   PAGES = 'pages',
   LISTENING = 'listening',
   VOCAB = 'vocab',
+  LESSONS = 'lessons',
   CUSTOM = 'custom'
 }
 

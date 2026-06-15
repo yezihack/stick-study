@@ -158,7 +158,8 @@
     "sponsorDialogTitle": "微信赞助",
     "sponsorDialogTip": "微信扫码赞助，感谢支持 ❤️",
     "sponsorDownload": "下载收款码",
-    "noAds": "无广告，放心使用"
+    "noAds": "无广告，放心使用",
+    "contact": "联系作者"
   },
   "taskType": {
     "questions": "题目",
@@ -166,6 +167,7 @@
     "pages": "阅读",
     "listening": "听力",
     "vocab": "词汇",
+    "lessons": "课时",
     "custom": "自定义"
   },
   "common": {

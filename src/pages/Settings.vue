@@ -185,6 +185,7 @@
       </button>
 
       <p class="no-ads">🛡️ {{ t('settings.noAds') }}</p>
+      <p class="contact">📧 {{ t('settings.contact') }}: dev@7778880.xyz</p>
     </section>
 
     <!-- Sponsor QR dialog -->
@@ -741,6 +742,13 @@ function showToast(msg: string, type: 'info' | 'success' | 'error' = 'info') {
   font-size: 0.8rem;
   color: var(--moss);
   font-weight: 500;
+}
+
+.contact {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: rgba(var(--ink-rgb), 0.5);
+  font-family: var(--font-mono);
 }
 
 /* Sponsor dialog */

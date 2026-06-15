@@ -158,7 +158,8 @@
     "sponsorDialogTitle": "WeChat で支援",
     "sponsorDialogTip": "WeChat でスキャンして支援。ありがとうございます ❤️",
     "sponsorDownload": "QRコードをダウンロード",
-    "noAds": "広告なし、安心してご利用ください"
+    "noAds": "広告なし、安心してご利用ください",
+    "contact": "作者に連絡"
   },
   "taskType": {
     "questions": "問題",
@@ -166,6 +167,7 @@
     "pages": "ページ",
     "listening": "聴解",
     "vocab": "語彙",
+    "lessons": "課時",
     "custom": "カスタム"
   },
   "common": {

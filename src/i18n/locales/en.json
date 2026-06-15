@@ -158,7 +158,8 @@
     "sponsorDialogTitle": "WeChat Sponsor",
     "sponsorDialogTip": "Scan with WeChat to sponsor. Thank you ❤️",
     "sponsorDownload": "Download QR code",
-    "noAds": "No ads, use with confidence"
+    "noAds": "No ads, use with confidence",
+    "contact": "Contact Author"
   },
   "taskType": {
     "questions": "Questions",
@@ -166,6 +167,7 @@
     "pages": "Pages",
     "listening": "Listening",
     "vocab": "Vocabulary",
+    "lessons": "Lessons",
     "custom": "Custom"
   },
   "common": {
