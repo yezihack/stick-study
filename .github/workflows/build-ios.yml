@@ -1,0 +1,72 @@
+name: Build iOS App
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Add iOS platform
+        run: |
+          npm install @capacitor/ios
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Build unsigned archive
+        working-directory: ios/App
+        run: |
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath "$RUNNER_TEMP/App.xcarchive" \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM=""
+
+      - name: Package unsigned IPA
+        run: |
+          APP_PATH="$RUNNER_TEMP/App.xcarchive/Products/Applications"
+          mkdir -p "$RUNNER_TEMP/Payload"
+          cp -R "$APP_PATH"/*.app "$RUNNER_TEMP/Payload/"
+          cd "$RUNNER_TEMP"
+          zip -r stick-study-unsigned.ipa Payload
+          echo "ipa=$RUNNER_TEMP/stick-study-unsigned.ipa" >> "$GITHUB_ENV"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stick-study-ios-unsigned
+          path: ${{ env.ipa }}
+
+      - name: Attach IPA to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ipa }}
