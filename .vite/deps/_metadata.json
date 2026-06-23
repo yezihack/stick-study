@@ -1,0 +1,55 @@
+{
+  "hash": "35b07d2f",
+  "configHash": "4fed6c1e",
+  "lockfileHash": "416c97e0",
+  "browserHash": "1db5a08f",
+  "optimized": {
+    "vue": {
+      "src": "../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "97ec02c3",
+      "needsInterop": false
+    },
+    "vue-router": {
+      "src": "../../node_modules/vue-router/dist/vue-router.mjs",
+      "file": "vue-router.js",
+      "fileHash": "abcb4f01",
+      "needsInterop": false
+    },
+    "vue-i18n": {
+      "src": "../../node_modules/vue-i18n/dist/vue-i18n.mjs",
+      "file": "vue-i18n.js",
+      "fileHash": "af7f529b",
+      "needsInterop": false
+    },
+    "@capacitor/core": {
+      "src": "../../node_modules/@capacitor/core/dist/index.js",
+      "file": "@capacitor_core.js",
+      "fileHash": "2e601b9f",
+      "needsInterop": false
+    },
+    "@capacitor/status-bar": {
+      "src": "../../node_modules/@capacitor/status-bar/dist/esm/index.js",
+      "file": "@capacitor_status-bar.js",
+      "fileHash": "1d051101",
+      "needsInterop": false
+    },
+    "dexie": {
+      "src": "../../node_modules/dexie/dist/modern/dexie.mjs",
+      "file": "dexie.js",
+      "fileHash": "730462d9",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-AYVSL3LM": {
+      "file": "chunk-AYVSL3LM.js"
+    },
+    "chunk-GKS3XWPP": {
+      "file": "chunk-GKS3XWPP.js"
+    },
+    "chunk-VDS6KEGI": {
+      "file": "chunk-VDS6KEGI.js"
+    }
+  }
+}

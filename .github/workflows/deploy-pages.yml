@@ -1,0 +1,60 @@
+# 部署在线版（静态站点）到 GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # 推送到 main 分支时触发
+  push:
+    branches: ["main"]
+  # 允许在 Actions 页面手动触发
+  workflow_dispatch:
+
+# 配置 GITHUB_TOKEN 权限以允许部署到 Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允许一个并发部署，跳过排队中的运行，但不取消进行中的运行
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          GITHUB_PAGES: 'true'
+
+      # history 路由模式：复制 index.html 为 404.html，支持子路径直接访问/刷新
+      - name: Create SPA 404 fallback
+        run: cp dist/index.html dist/404.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
