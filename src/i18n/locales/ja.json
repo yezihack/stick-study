@@ -79,6 +79,10 @@
     "noPlansSub": "最初の学習計画を作成しましょう",
     "daysLeft": "残り {days} 日",
     "daysOver": "終了済み",
+    "completionRate": "達成率",
+    "completionStats": "完了状況",
+    "archivedAt": "アーカイブ日",
+    "autoArchived": "自動アーカイブ",
     "form": {
       "titleCreate": "計画を作成",
       "titleEdit": "計画を編集",

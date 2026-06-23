@@ -17,8 +17,13 @@ export interface Plan {
   startDate: string // ISO 日期 "YYYY-MM-DD"
   endDate: string
   isActive: boolean // 是否启用
+  isArchived: boolean // 是否已归档（过期自动归档）
   color: string // 主题色（hex）
   createdAt: string // ISO timestamp
+  archivedAt?: string // 归档时间戳（ISO）
+  completionRate?: number // 完成率（0-1），归档时计算
+  totalTasks?: number // 总任务数，归档时计算
+  completedTasks?: number // 已完成任务数，归档时计算
 }
 
 export interface TaskItem {

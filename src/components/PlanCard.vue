@@ -64,8 +64,8 @@
         </div>
       </div>
 
-      <!-- Progress bar -->
-      <div class="card-progress">
+      <!-- Progress bar or archive stats -->
+      <div v-if="!plan.isArchived" class="card-progress">
         <div class="progress-track">
           <div
             class="progress-fill"
@@ -79,6 +79,28 @@
               : t('plans.daysLeft', { days: progress.daysLeft })
           }}
         </span>
+      </div>
+
+      <!-- Archive completion stats -->
+      <div v-else class="card-archive-stats">
+        <div class="archive-info">
+          <span class="archive-label">📦 {{ t('plans.autoArchived') }}</span>
+          <span v-if="plan.archivedAt" class="archive-date">
+            {{ formatArchiveDate(plan.archivedAt) }}
+          </span>
+        </div>
+        <div v-if="plan.completionRate !== undefined" class="completion-stats">
+          <div class="completion-bar">
+            <div
+              class="completion-fill"
+              :style="{ width: (plan.completionRate * 100) + '%', background: plan.color }"
+            />
+          </div>
+          <div class="completion-text">
+            <span class="completion-rate">{{ formatCompletionRate(plan.completionRate) }}</span>
+            <span class="completion-count">{{ getCompletionStats(plan) }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -132,6 +154,26 @@ function typeStyle(type: string) {
 
 function unitSuffix(type: string): string {
   return type === TaskType.PAGES ? 'p' : ''
+}
+
+// Format completion rate as percentage
+function formatCompletionRate(rate?: number): string {
+  if (rate === undefined) return '0.0%'
+  return `${(rate * 100).toFixed(1)}%`
+}
+
+// Get completion stats text
+function getCompletionStats(plan: Plan): string {
+  if (!plan.totalTasks || !plan.completedTasks) {
+    return ''
+  }
+  return `${plan.completedTasks} / ${plan.totalTasks}`
+}
+
+// Format archive date
+function formatArchiveDate(isoDate: string): string {
+  const date = new Date(isoDate)
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 </script>
 
@@ -261,6 +303,68 @@ function unitSuffix(type: string): string {
 
 .days-left.over {
   color: rgba(var(--ink-rgb), 0.35);
+}
+
+/* ── Archive stats ────────────────────────────────── */
+.card-archive-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.archive-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.archive-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(var(--ink-rgb), 0.5);
+}
+
+.archive-date {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(var(--ink-rgb), 0.4);
+}
+
+.completion-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.completion-bar {
+  height: 6px;
+  background: rgba(var(--ink-rgb), 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.completion-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s;
+}
+
+.completion-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.completion-rate {
+  font-weight: 700;
+  color: var(--moss);
+}
+
+.completion-count {
+  color: rgba(var(--ink-rgb), 0.55);
 }
 
 /* ── 小任务: sub-task zone (paper tone) ────────────── */

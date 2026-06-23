@@ -79,6 +79,10 @@
     "noPlansSub": "创建你的第一个学习计划",
     "daysLeft": "还剩 {days} 天",
     "daysOver": "已结束",
+    "completionRate": "完成率",
+    "completionStats": "完成情况",
+    "archivedAt": "归档于",
+    "autoArchived": "自动归档",
     "form": {
       "titleCreate": "新建计划",
       "titleEdit": "编辑计划",

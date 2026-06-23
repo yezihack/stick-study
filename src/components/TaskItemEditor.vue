@@ -19,29 +19,31 @@
       </div>
     </div>
 
-    <!-- Count slider + description row -->
-    <div class="item-row">
-      <div class="count-field">
-        <div class="count-header">
-          <label class="count-label">{{ t('plans.template.count') }}</label>
-          <span class="count-value">{{ item.count }}</span>
-        </div>
-        <input
-          class="count-slider"
-          type="range"
-          min="1"
-          max="100"
-          step="1"
-          :value="item.count"
-          :aria-label="t('plans.template.count')"
-          @input="
-            emit('update', {
-              ...item,
-              count: Math.max(1, Number(($event.target as HTMLInputElement).value))
-            })
-          "
-        />
+    <!-- Count slider (first row) -->
+    <div class="count-field">
+      <div class="count-header">
+        <label class="count-label">{{ t('plans.template.count') }}</label>
+        <span class="count-value">{{ item.count }}</span>
       </div>
+      <input
+        class="count-slider"
+        type="range"
+        min="1"
+        max="25"
+        step="1"
+        :value="item.count"
+        :aria-label="t('plans.template.count')"
+        @input="
+          emit('update', {
+            ...item,
+            count: Math.max(1, Number(($event.target as HTMLInputElement).value))
+          })
+        "
+      />
+    </div>
+
+    <!-- Description + remove button (second row) -->
+    <div class="desc-row">
       <input
         class="desc-input"
         type="text"
@@ -114,14 +116,7 @@ const taskTypes = Object.values(TaskType)
   color: white;
 }
 
-.item-row {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
-}
-
 .count-field {
-  min-width: 140px;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -179,6 +174,12 @@ const taskTypes = Object.values(TaskType)
   border: 2.5px solid white;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
+}
+
+.desc-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .desc-input {

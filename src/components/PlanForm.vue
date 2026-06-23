@@ -230,7 +230,8 @@ const form = ref({
   startDate: '',
   endDate: '',
   color: COLORS[0],
-  isActive: true
+  isActive: true,
+  isArchived: false
 })
 
 type TemplateLocal = Omit<TaskTemplate, 'planId'>
@@ -288,7 +289,8 @@ watch(
         startDate: p.startDate,
         endDate: p.endDate,
         color: p.color,
-        isActive: p.isActive
+        isActive: p.isActive,
+        isArchived: p.isArchived || false
       }
       localTemplates.value = props.editingTemplates.map(t => ({
         id: t.id,
@@ -304,7 +306,8 @@ watch(
         startDate: today,
         endDate: addDays(today, duration.value - 1),
         color: COLORS[0],
-        isActive: true
+        isActive: true,
+        isArchived: false
       }
       localTemplates.value = [freshTemplate()]
       dateMode.value = 'duration'

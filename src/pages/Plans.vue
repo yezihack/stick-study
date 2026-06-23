@@ -24,18 +24,37 @@
       </section>
 
       <!-- Archived plans -->
-      <section v-if="archivedPlans.length > 0" class="plans-section">
-        <h2 class="section-label">{{ t('plans.archived') }}</h2>
-        <div class="plans-list archived">
-          <PlanCard
-            v-for="plan in archivedPlans"
-            :key="plan.id"
-            :plan="plan"
-            :templates="templatesByPlan[plan.id]"
-            @edit="openEdit"
-            @toggle="toggleActive"
-          />
-        </div>
+      <section v-if="archivedPlans.length > 0" class="plans-section archived-section">
+        <button class="archived-toggle" @click="showArchived = !showArchived">
+          <span class="toggle-text">
+            {{ t('plans.archived') }} ({{ archivedPlans.length }})
+          </span>
+          <span class="toggle-icon" :class="{ expanded: showArchived }">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </span>
+        </button>
+
+        <Transition name="slide-fade">
+          <div v-if="showArchived" class="plans-list archived">
+            <PlanCard
+              v-for="plan in archivedPlans"
+              :key="plan.id"
+              :plan="plan"
+              :templates="templatesByPlan[plan.id]"
+              @edit="openEdit"
+              @toggle="toggleActive"
+            />
+          </div>
+        </Transition>
       </section>
 
       <!-- Empty state -->
@@ -114,6 +133,7 @@ const showForm = ref(false)
 const editingPlan = ref<Plan | null>(null)
 const editingTemplates = ref<TaskTemplate[]>([])
 const confirmArchiveId = ref<string | null>(null)
+const showArchived = ref(false) // Toggle for archived plans
 
 // ── Templates per plan (for card sub-task display) ───────
 const templatesByPlan = ref<Record<string, TaskTemplate[]>>({})
@@ -250,6 +270,57 @@ onMounted(async () => {
   margin-bottom: 1.5rem;
 }
 
+.archived-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(var(--ink-rgb), 0.08);
+}
+
+.archived-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(var(--gold-rgb), 0.08);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: background 0.2s;
+}
+
+.archived-toggle:hover {
+  background: rgba(var(--gold-rgb), 0.12);
+}
+
+.toggle-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.toggle-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.toggle-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
 .section-label {
   font-size: 0.72rem;
   font-weight: 600;
@@ -266,7 +337,11 @@ onMounted(async () => {
 }
 
 .plans-list.archived {
-  opacity: 0.65;
+  opacity: 0.75;
+}
+
+.plans-list.archived .plan-card {
+  filter: grayscale(0.2);
 }
 
 /* Empty state */
@@ -370,5 +445,21 @@ onMounted(async () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Slide fade for archived plans */
+.slide-fade-enter-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-fade-leave-active {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 </style>

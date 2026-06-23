@@ -1,6 +1,6 @@
 {
   "name": "stick-study",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "学習打卡 - Daily study check-in app",
   "type": "module",
   "scripts": {

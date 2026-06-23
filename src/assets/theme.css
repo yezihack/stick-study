@@ -11,6 +11,7 @@
   /* Ink as an RGB triplet so components can build rgba() tints that
      adapt to dark mode, e.g. rgba(var(--ink-rgb), 0.5) */
   --ink-rgb: 26, 31, 26;
+  --gold-rgb: 184, 150, 42;
   /* Card / input surface color (sits above --paper) */
   --surface: #ffffff;
 
@@ -37,6 +38,7 @@
   --gold: #d4a832;
   --moss: #6a9761;
   --ink-rgb: 232, 239, 232;
+  --gold-rgb: 212, 168, 50;
   --surface: #252a25;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);

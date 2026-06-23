@@ -14,8 +14,8 @@ export function usePlans() {
   const plans = ref<Plan[]>([])
   const loading = ref(false)
 
-  const activePlans = computed(() => plans.value.filter(p => p.isActive))
-  const archivedPlans = computed(() => plans.value.filter(p => !p.isActive))
+  const activePlans = computed(() => plans.value.filter(p => p.isActive && !p.isArchived))
+  const archivedPlans = computed(() => plans.value.filter(p => p.isArchived))
 
   async function load() {
     loading.value = true
@@ -25,10 +25,11 @@ export function usePlans() {
     loading.value = false
   }
 
-  async function createPlan(data: Omit<Plan, 'id' | 'createdAt'>): Promise<string> {
+  async function createPlan(data: Omit<Plan, 'id' | 'createdAt' | 'isArchived'>): Promise<string> {
     const plan: Plan = {
       ...data,
       id: crypto.randomUUID(),
+      isArchived: false,
       createdAt: new Date().toISOString()
     }
     await db.plans.add(plan)
@@ -43,7 +44,11 @@ export function usePlans() {
   }
 
   async function archivePlan(id: string) {
-    await updatePlan(id, { isActive: false })
+    await updatePlan(id, {
+      isActive: false,
+      isArchived: true,
+      archivedAt: new Date().toISOString()
+    })
   }
 
   async function deletePlan(id: string) {
@@ -54,7 +59,26 @@ export function usePlans() {
 
   async function toggleActive(id: string) {
     const plan = plans.value.find(p => p.id === id)
-    if (plan) await updatePlan(id, { isActive: !plan.isActive })
+    if (!plan) return
+
+    if (plan.isActive) {
+      // 归档：禁用 + 标记为已归档
+      await updatePlan(id, {
+        isActive: false,
+        isArchived: true,
+        archivedAt: new Date().toISOString()
+      })
+    } else {
+      // 重新激活：启用 + 清除归档状态
+      await updatePlan(id, {
+        isActive: true,
+        isArchived: false,
+        archivedAt: undefined,
+        completionRate: undefined,
+        totalTasks: undefined,
+        completedTasks: undefined
+      })
+    }
   }
 
   function getPlanProgress(plan: Plan): { daysLeft: number; pct: number } {

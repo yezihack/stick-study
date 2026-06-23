@@ -79,6 +79,10 @@
     "noPlansSub": "Create your first study plan",
     "daysLeft": "{days} days left",
     "daysOver": "Ended",
+    "completionRate": "Completion",
+    "completionStats": "Progress",
+    "archivedAt": "Archived on",
+    "autoArchived": "Auto-archived",
     "form": {
       "titleCreate": "New Plan",
       "titleEdit": "Edit Plan",

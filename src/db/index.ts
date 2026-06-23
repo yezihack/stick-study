@@ -13,7 +13,7 @@ class StudyDB extends Dexie {
 
     // Define database schema
     this.version(1).stores({
-      plans: 'id, isActive, startDate, endDate',
+      plans: 'id, isActive, isArchived, startDate, endDate',
       taskTemplates: 'id, planId',
       dailyLogs: 'id, date, planId, completedAt',
       config: '++id'
@@ -50,8 +50,36 @@ export async function initializeDatabase() {
         })
       }
     }
+
+    // Migrate existing plans to add isArchived field if missing
+    await migratePlansSchema()
+
+    // Auto-archive expired plans
+    const { archiveExpiredPlans } = await import('@/utils/archivePlans')
+    await archiveExpiredPlans()
   } catch (error) {
     console.error('❌ Failed to initialize database:', error)
+  }
+}
+
+// Migrate existing plans to add new fields
+async function migratePlansSchema() {
+  const plans = await db.plans.toArray()
+  for (const plan of plans) {
+    const updates: Partial<Plan> = {}
+
+    // Add isArchived field if missing
+    if (plan.isArchived === undefined) {
+      // If plan is inactive, mark it as archived
+      updates.isArchived = !plan.isActive
+      if (updates.isArchived && !plan.archivedAt) {
+        updates.archivedAt = new Date().toISOString()
+      }
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await db.plans.update(plan.id, updates)
+    }
   }
 }
 
