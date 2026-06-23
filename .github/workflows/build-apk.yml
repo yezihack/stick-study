@@ -95,4 +95,22 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
+          name: 守习 Stick Study ${{ github.ref_name }}
+          generate_release_notes: true
+          body: |
+            ## 守习 · Stick Study ${{ github.ref_name }}
+
+            一款离线优先的每日学习打卡工具（Vue 3 + Capacitor）。
+
+            ### 📥 下载安装
+            - 下载下方的 `${{ steps.apk.outputs.name }}`
+            - 在 Android 设备上允许「安装未知来源应用」后点击安装
+            - 最低系统要求：Android 7.0（API 24）及以上
+
+            ### ℹ️ 说明
+            - 数据 100% 存储在本地，无需注册、不上传任何数据
+            - 支持 简体中文 / English / 日本語
+
+            ---
+            完整功能介绍见 [README](https://github.com/yezihack/stick-study#readme)。
           files: ${{ steps.apk.outputs.path }}

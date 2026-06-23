@@ -165,6 +165,20 @@ npm run format
 
 ---
 
+## 📥 下载安装
+
+直接下载已签名的 Android APK，无需自行构建：
+
+1. 前往 [Releases 页面](https://github.com/yezihack/stick-study/releases)
+2. 在最新版本的 **Assets** 中下载 `stick-study-<版本>-release.apk`
+3. 在 Android 设备上允许「安装未知来源应用」，点击 APK 安装
+
+> 最低系统要求：Android 7.0（API 24）及以上。
+
+每当推送 `v*` 标签（如 `v1.0.7`），GitHub Actions 会自动构建并签名 APK，发布到 Releases 页面。签名密钥与 CI 环境变量的配置见 [`docs/android-signing.md`](docs/android-signing.md)。
+
+---
+
 ## 📦 打包为 App（Capacitor）
 
 应用标识：`appId = com.study.checkin`，`appName = 学習打卡`，`webDir = dist`。
