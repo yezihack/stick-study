@@ -427,7 +427,7 @@ async function downloadQrInBrowser() {
     const url = URL.createObjectURL(await res.blob())
     const a = document.createElement('a')
     a.href = url
-    a.download = 'wxpay.jpg'
+    a.download = 'wxpay.png'
     a.click()
     URL.revokeObjectURL(url)
     showToast(t('settings.toast.qrDownloaded'), 'success')
