@@ -12,8 +12,10 @@ export const appConfig = {
   slogan: '坚持，是最好的学习方法',
   /** Open-source repository — "star to say thanks". */
   githubUrl: 'https://github.com/yezihack/stick-study',
-  /** WeChat Pay QR shown in the sponsor dialog. */
-  wechatQrUrl: '/wxpay.jpg'
+  /** WeChat Pay QR shown in the sponsor dialog.
+      Prefixed with BASE_URL so it works under GitHub Pages sub-path
+      (e.g. /stick-study/) as well as local/APK (base '/'). */
+  wechatQrUrl: `${import.meta.env.BASE_URL}wxpay.jpg`
 } as const
 
 /**
